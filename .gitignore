@@ -1,5 +1,7 @@
 # Dirs
 build/
+.cache/
 
 # Files
 Makefile
+compile_commands.json

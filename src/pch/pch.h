@@ -1,0 +1,24 @@
+#pragma once
+//Precompiled header
+
+//Data structures
+#include<list>
+#include<vector>
+#include<deque>
+#include<map>
+#include<set>
+#include<string>
+
+//General
+#include<memory>
+#include<ctime>
+#include<utility>
+#include<iostream>
+#include<functional>
+#include<sstream>
+#include<chrono>
+#include<random>
+
+//This project
+#include"logger.h"
+#include"utils.h"

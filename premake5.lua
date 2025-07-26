@@ -10,7 +10,6 @@ include "vendors/glfw-3.4/"
 include "vendors/glew-2.2.0/"
 
 project "snakegl"
-  kind "WindowedApp"
   language "C++"
   cppdialect "C++23"
   staticruntime "On"
@@ -55,10 +54,14 @@ project "snakegl"
     "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/"
   }
 
+  pchheader "src/pch/pch.h"
+  pchsource "src/pch/pch.cpp"
+
   filter "system:windows"
     defines
     {
       "_GLFW_WIN32",
+      "_SNAKEGL_WINDOWS",
     }
     links
     {
@@ -70,6 +73,7 @@ project "snakegl"
     defines
     {
       "_GLFW_X11",
+      "_SNAKEGL_LINUX",
     }
     links
     {
@@ -84,11 +88,18 @@ project "snakegl"
     }
 
 filter "configurations:Debug"
+    kind "ConsoleApp"
     runtime "Debug"
     symbols "on"
     defines "_SNAKEGL_DEBUG"
 
 filter "configurations:Release"
+    kind "WindowedApp"
     runtime "Release"
     optimize "on"
     defines "_SNAKEGL_RELEASE"
+    postbuildcommands{
+      "{MKDIR} " .. compiletimeBuildDir .. "/snakegl",
+      "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/snakegl",
+      "{COPYDIR} " .. compiletimeBuildDir .. "/bin " .. compiletimeBuildDir .. "/snakegl"
+    }
