@@ -16,20 +16,19 @@ GameApplication::~GameApplication(){
 void GameApplication::Run(){
   //Chrono now binding
   auto cnow = std::chrono::high_resolution_clock::now;
-  auto then = cnow();
+  auto lastFrame = cnow();
 
   float deltaSeconds;
 
   while(!_pWindow->ShouldTerminate()){
     auto now = cnow();
     //From nanoseconds
-    deltaSeconds = (then - now).count() * 1e-9;
+    deltaSeconds = (now - lastFrame).count() * 1e-9;
+    lastFrame = cnow();
 
     _pGame->OnUpdate(deltaSeconds);
 
     _pWindow->PollEvents();
     _pWindow->SwapBuffers();
-
-    then = cnow();
   }
 }

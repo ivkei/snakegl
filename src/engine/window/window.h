@@ -1,10 +1,12 @@
 #pragma once
 
+#include"api.h"
+
 namespace SGE{
 
 class SGE_API Window final{
 public:
-  struct Stats{
+  struct SGE_API Stats{
     const char* name;
     int width;
     int height;

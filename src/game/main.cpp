@@ -2,7 +2,7 @@
 
 #include"gameapplication/gameapplication.h"
 
-SGE::Application* SGE::CreateApplication{
+SGE::Application* SGE::CreateApplication(){
   return new GameApplication();
 }
 

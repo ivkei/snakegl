@@ -5,7 +5,7 @@
 
 class GameApplication : public SGE::Application{
 private:
-  Window* _pWindow;
+  SGE::Window* _pWindow;
   Game* _pGame;
 public:
   GameApplication();

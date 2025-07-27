@@ -2,7 +2,9 @@
 
 #include"GLFW/glfw3.h"
 
-#include"pch/pch.h"
+#include"stdpch/stdpch.h"
+#include"logger.h"
+#include"keys.h"
 
 namespace SGE{
 
@@ -32,7 +34,7 @@ Window::Window(Stats stats)
     if (!glfwInit()){
       const char* error;
       glfwGetError(&error);
-      LOG_ERROR(error);
+      SGE_LOG_ERROR(error);
       exit(1);
     }
   }
@@ -50,7 +52,7 @@ Window::Window(Stats stats)
   GLFWwindow* pWindow(glfwCreateWindow(stats.width, stats.height, stats.name, NULL, NULL));
   if (!pWindow){
     //If couldnt create a pWindow
-    LOG_ERROR("Couldn't create a window");
+    SGE_LOG_ERROR("Couldn't create a window");
     glfwTerminate();
     exit(1);
   }
@@ -99,7 +101,7 @@ int KeyToGLFWKey(int key){
 
 void Window::SetKeyCallback(int key, void(*func)()){
   int glfwKey = KeyToGLFWKey(key);
-  LOG_ASSERT(glfwKey != -1, "Invalid key passed to set callback");
+  SGE_LOG_ASSERT(glfwKey != -1, "Invalid key passed to set callback");
 
   if (glfwKeyToFuncCallback.contains(glfwKey)) glfwKeyToFuncCallback.erase(glfwKey);
   glfwKeyToFuncCallback.emplace(glfwKey, func);
@@ -107,7 +109,7 @@ void Window::SetKeyCallback(int key, void(*func)()){
 
 void Window::DeleteCallback(int key){
   int glfwKey = KeyToGLFWKey(key);
-  LOG_ASSERT(glfwKey != -1, "Invalid key passed to delete callback");
+  SGE_LOG_ASSERT(glfwKey != -1, "Invalid key passed to delete callback");
   if (glfwKeyToFuncCallback.contains(glfwKey)) glfwKeyToFuncCallback.erase(glfwKey);
 }
 

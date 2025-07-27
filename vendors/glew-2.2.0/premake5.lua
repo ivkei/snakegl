@@ -1,4 +1,5 @@
 project "glew"
+pic "on"
 kind "StaticLib"
 language "C"
 

@@ -1,4 +1,5 @@
 project "glfw"
+  pic "on"
 	kind "StaticLib"
 	language "C"
 	staticruntime "on"

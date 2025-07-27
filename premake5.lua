@@ -33,7 +33,9 @@ project "snakeglgame"
 
   includedirs{
     "src/game",
-    "src/"
+    "src/",
+    "vendors/glm-1.0.1",
+    "src/engine",
   }
 
   defines
@@ -45,6 +47,10 @@ project "snakeglgame"
 
   postbuildcommands{
     "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/"
+  }
+
+  links{
+    "snakeglengine"
   }
 
   filter "system:windows"
@@ -83,6 +89,7 @@ project "snakeglengine"
   cppdialect "C++23"
   staticruntime "On"
   kind "SharedLib"
+  pic "on"
 
   targetdir("build/bin/")
   objdir("build/obj/")
@@ -149,7 +156,7 @@ project "snakeglengine"
 filter "configurations:Debug"
     runtime "Debug"
     symbols "on"
-    defines "_SNAKEGL_DEBUG",
+    defines "_SNAKEGL_DEBUG"
 
 filter "configurations:Release"
     runtime "Release"
