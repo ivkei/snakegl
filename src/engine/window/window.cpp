@@ -4,6 +4,8 @@
 
 #include"pch/pch.h"
 
+namespace SGE{
+
 //Use address of window as key, when moved or copied ctor will handle the change (todo??)
 static std::unordered_map<const Window*, GLFWwindow*> addressToWindow;
 
@@ -116,4 +118,6 @@ void Window::PollEvents() const{
 void Window::SwapBuffers() const{
   GLFWwindow* pWindow = addressToWindow.at(this);
   glfwSwapBuffers(pWindow);
+}
+
 }

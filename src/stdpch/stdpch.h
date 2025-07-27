@@ -1,6 +1,3 @@
-#pragma once
-//Precompiled header
-
 //Data structures
 #include<list>
 #include<vector>
@@ -18,7 +15,5 @@
 #include<sstream>
 #include<chrono>
 #include<random>
-
-//This project
-#include"logger.h"
-#include"keys.h"
+#include<cstdlib>
+#include<mutex>

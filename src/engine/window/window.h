@@ -1,6 +1,8 @@
 #pragma once
 
-class Window final{
+namespace SGE{
+
+class SGE_API Window final{
 public:
   struct Stats{
     const char* name;
@@ -30,3 +32,5 @@ public:
   inline int Height() const { return _stats.height; }
   inline const char* Name() const { return _stats.name; }
 };
+
+}

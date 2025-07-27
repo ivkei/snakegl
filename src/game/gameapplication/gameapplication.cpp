@@ -1,17 +1,19 @@
-#include"application.h"
+#include"gameapplication.h"
 
-#include"pch/pch.h"
+#include"stdpch/stdpch.h"
 
-Application::Application(){
-  Window::Stats stats = {"SnakeGame", 720, 720};
-  _pWindow = new Window(stats);
+GameApplication::GameApplication(){
+  SGE::Window::Stats stats = {"SnakeGL", 720, 720};
+  _pWindow = new SGE::Window(stats);
+  _pGame = new Game(*_pWindow);
 }
 
-Application::~Application(){
+GameApplication::~GameApplication(){
+  delete _pGame;
   delete _pWindow;
 }
 
-void Application::Run(){
+void GameApplication::Run(){
   //Chrono now binding
   auto cnow = std::chrono::high_resolution_clock::now;
   auto then = cnow();
@@ -23,7 +25,7 @@ void Application::Run(){
     //From nanoseconds
     deltaSeconds = (then - now).count() * 1e-9;
 
-    //Logic here
+    _pGame->OnUpdate(deltaSeconds);
 
     _pWindow->PollEvents();
     _pWindow->SwapBuffers();

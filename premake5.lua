@@ -9,7 +9,14 @@ configurations
 include "vendors/glfw-3.4/"
 include "vendors/glew-2.2.0/"
 
-project "snakegl"
+runtimeResDir = path.getrelative("%{prj.location}/build/bin/", "%{prj.location}/build/res/")
+compiletimeResDir = path.getabsolute("%{prj.location}/res/")
+compiletimeBuildDir = path.getabsolute("%{prj.location}/build/")
+
+pchheader "src/stdpch/stdpch.h"
+pchsource "src/stdpch/stdpch.cpp"
+
+project "snakeglgame"
   language "C++"
   cppdialect "C++23"
   staticruntime "On"
@@ -20,17 +27,78 @@ project "snakegl"
 
   files
   {
-    "src/**.h",
-    "src/**.cpp",
+    "src/game/**.h",
+    "src/game/**.cpp",
   }
 
-  runtimeResDir = path.getrelative("%{prj.location}/build/bin/", "%{prj.location}/build/res/")
+  includedirs{
+    "src/game",
+    "src/"
+  }
+
+  defines
+  {
+    "_CRT_SECURE_NO_WARNINGS",
+    "RES_DIR=\"" .. runtimeResDir .. "/\"",
+    "_SNAKEGL_GAME",
+  }
+
+  postbuildcommands{
+    "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/"
+  }
+
+  filter "system:windows"
+    defines
+    {
+      "_SNAKEGL_WINDOWS",
+    }
+
+  filter "system:linux"
+    defines
+    {
+      "_SNAKEGL_LINUX",
+    }
+
+filter "configurations:Debug"
+    kind "ConsoleApp"
+    runtime "Debug"
+    symbols "on"
+    defines {
+      "_SNAKEGL_DEBUG",
+    }
+
+filter "configurations:Release"
+    kind "WindowedApp"
+    runtime "Release"
+    optimize "on"
+    defines "_SNAKEGL_RELEASE"
+    postbuildcommands{
+      "{MKDIR} " .. compiletimeBuildDir .. "/snakegl",
+      "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/snakegl",
+      "{COPYDIR} " .. compiletimeBuildDir .. "/bin " .. compiletimeBuildDir .. "/snakegl"
+    }
+
+project "snakeglengine"
+  language "C++"
+  cppdialect "C++23"
+  staticruntime "On"
+  kind "SharedLib"
+
+  targetdir("build/bin/")
+  objdir("build/obj/")
+  location("build/")
+
+  files
+  {
+    "src/engine/**.h",
+    "src/engine/**.cpp",
+  }
 
   defines
   {
     "_CRT_SECURE_NO_WARNINGS",
     "GLEW_STATIC",
-    "RES_DIR=\"" .. runtimeResDir .. "/\"",
+    "_SNAKEGL_ENGINE",
   }
 
   links
@@ -44,18 +112,9 @@ project "snakegl"
     "vendors/glfw-3.4/include",
     "vendors/glew-2.2.0/include",
     "vendors/glm-1.0.1",
+    "src/engine",
     "src/",
   }
-
-  compiletimeResDir = path.getabsolute("%{prj.location}/res/")
-  compiletimeBuildDir = path.getabsolute("%{prj.location}/build/")
-
-  postbuildcommands{
-    "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/"
-  }
-
-  pchheader "src/pch/pch.h"
-  pchsource "src/pch/pch.cpp"
 
   filter "system:windows"
     defines
@@ -88,22 +147,11 @@ project "snakegl"
     }
 
 filter "configurations:Debug"
-    kind "ConsoleApp"
     runtime "Debug"
     symbols "on"
-    defines {
-      "_SNAKEGL_DEBUG",
-      "_SNAKEGL_ENABLE_LOGGING",
-      "_SNAKEGL_ENABLE_ASSERTS"
-    }
+    defines "_SNAKEGL_DEBUG",
 
 filter "configurations:Release"
-    kind "WindowedApp"
     runtime "Release"
     optimize "on"
     defines "_SNAKEGL_RELEASE"
-    postbuildcommands{
-      "{MKDIR} " .. compiletimeBuildDir .. "/snakegl",
-      "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/snakegl",
-      "{COPYDIR} " .. compiletimeBuildDir .. "/bin " .. compiletimeBuildDir .. "/snakegl"
-    }
