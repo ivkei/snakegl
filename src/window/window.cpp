@@ -3,9 +3,9 @@
 #include"GLFW/glfw3.h"
 
 #include"pch/pch.h"
-#include"utils.h"
 
-static std::unordered_map<int, GLFWwindow*> idToWindow;
+//Use address of window as key, when moved or copied ctor will handle the change (todo??)
+static std::unordered_map<const Window*, GLFWwindow*> addressToWindow;
 
 const Window::Stats Window::Stats::Default = {"Application", 1280, 720};
 
@@ -21,19 +21,20 @@ void KeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mod
   }
 }
 
-Window::Window(Stats stats)
-: _windowID(0){
-  srand(time(NULL));
-  while (idToWindow.contains(_windowID)){
-    _windowID = rand();
-  }
+static bool wasGlfwInit = false;
 
-  if (!glfwInit()){
-    const char* error;
-    glfwGetError(&error);
-    LOG_ERROR(error);
-    exit(1);
+Window::Window(Stats stats)
+: _stats(stats){
+
+  if (!wasGlfwInit){
+    if (!glfwInit()){
+      const char* error;
+      glfwGetError(&error);
+      LOG_ERROR(error);
+      exit(1);
+    }
   }
+  wasGlfwInit = true;
 
   //OpenGL version
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -52,7 +53,7 @@ Window::Window(Stats stats)
     exit(1);
   }
 
-  idToWindow.emplace(_windowID, pWindow);
+  addressToWindow.emplace(this, pWindow);
 
   //Make the pWindow's context current
   glfwMakeContextCurrent(pWindow);
@@ -61,16 +62,22 @@ Window::Window(Stats stats)
   glfwSetKeyCallback(pWindow, KeyCallback);
 }
 
-Window::~Window(){
-  idToWindow.erase(_windowID);
+void Window::Bind() const{
+  GLFWwindow* pWindow = addressToWindow.at(this);
+  glfwMakeContextCurrent(pWindow);
+}
 
-  if (idToWindow.size() == 0){
+Window::~Window(){
+  addressToWindow.erase(this);
+
+  if (addressToWindow.size() == 0){
     glfwTerminate();
+    wasGlfwInit = false;
   }
 }
 
 bool Window::ShouldTerminate() const{
-  GLFWwindow* pWindow = idToWindow.at(_windowID);
+  GLFWwindow* pWindow = addressToWindow.at(this);
   return glfwWindowShouldClose(pWindow);
 }
 
@@ -88,9 +95,9 @@ int KeyToGLFWKey(int key){
   }
 }
 
-void Window::SetCallback(int key, void(*func)()){
+void Window::SetKeyCallback(int key, void(*func)()){
   int glfwKey = KeyToGLFWKey(key);
-  ASSERT(glfwKey != -1);
+  LOG_ASSERT(glfwKey != -1, "Invalid key passed to set callback");
 
   if (glfwKeyToFuncCallback.contains(glfwKey)) glfwKeyToFuncCallback.erase(glfwKey);
   glfwKeyToFuncCallback.emplace(glfwKey, func);
@@ -98,7 +105,7 @@ void Window::SetCallback(int key, void(*func)()){
 
 void Window::DeleteCallback(int key){
   int glfwKey = KeyToGLFWKey(key);
-  ASSERT(glfwKey != -1);
+  LOG_ASSERT(glfwKey != -1, "Invalid key passed to delete callback");
   if (glfwKeyToFuncCallback.contains(glfwKey)) glfwKeyToFuncCallback.erase(glfwKey);
 }
 
@@ -107,6 +114,6 @@ void Window::PollEvents() const{
 }
 
 void Window::SwapBuffers() const{
-  GLFWwindow* pWindow = idToWindow.at(_windowID);
+  GLFWwindow* pWindow = addressToWindow.at(this);
   glfwSwapBuffers(pWindow);
 }

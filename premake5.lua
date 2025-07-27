@@ -91,7 +91,11 @@ filter "configurations:Debug"
     kind "ConsoleApp"
     runtime "Debug"
     symbols "on"
-    defines "_SNAKEGL_DEBUG"
+    defines {
+      "_SNAKEGL_DEBUG",
+      "_SNAKEGL_ENABLE_LOGGING",
+      "_SNAKEGL_ENABLE_ASSERTS"
+    }
 
 filter "configurations:Release"
     kind "WindowedApp"

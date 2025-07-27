@@ -1,7 +1,6 @@
 #include"application.h"
 
 #include"pch/pch.h"
-#include"utils.h"
 
 Application::Application(){
   Window::Stats stats = {"SnakeGame", 720, 720};
@@ -22,7 +21,7 @@ void Application::Run(){
   while(!_pWindow->ShouldTerminate()){
     auto now = cnow();
     //From nanoseconds
-    deltaSeconds = (then - now).count() / 10e+9;
+    deltaSeconds = (then - now).count() * 1e-9;
 
     //Logic here
 

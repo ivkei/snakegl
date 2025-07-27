@@ -1,7 +1,6 @@
 #pragma once
 
 #include"pch/pch.h"
-#include"utils.h"
 
 //TODO(kei): Get timestamp for linux isnt thread safe, fix
 
@@ -45,12 +44,20 @@ public:
 #define LOG_ERROR(...)        Logger::LogToConsole("Error", "\033[31m", __VA_ARGS__, "\n{\nFile: ", __FILE__, "\nLine: ", __LINE__, "\n}")
 //Log success to console, green color applied
 #define LOG_SUCCESS(...)      Logger::LogToConsole("Success", "\033[32m", __VA_ARGS__, "\n{\nFile: ", __FILE__, "\nLine: ", __LINE__, "\n}")
-//Blue color
-#define LOG_ASSERT(...)       Logger::LogToConsole("Assert", "\033[34m", __VA_ARGS__, "\n{\nFile: ", __FILE__, "\nLine: ", __LINE__, "\n}")
 #else
 #define LOG_INFO(...)
 #define LOG_WARNING(...)
 #define LOG_ERROR(...)
 #define LOG_SUCCESS(...)
+#endif
+
+#ifdef _SNAKEGL_ENABLE_LOGGING
+#ifdef _SNAKEGL_ENABLE_ASSERTS
+//Blue color
+#define LOG_ASSERT(x, ...) if (!(x)) Logger::LogToConsole("Assertion failed (" #x ")", "\033[34m", __VA_ARGS__, "\n{\nFile: ", __FILE__, "\nLine: ", __LINE__, "\n}")
+#else
+#define LOG_ASSERT(...)
+#endif
+#else
 #define LOG_ASSERT(...)
 #endif
