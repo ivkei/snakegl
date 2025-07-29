@@ -1,6 +1,7 @@
-# snakegl
-A cross platform, almost, snake game, which is implemented via OpenGL.  
-It runs on Linux and Windows, for Mac premake5.lua's have to to be changed to compile right, I'll appreciate pull requests.
+# SnakeGameLibrary
+A cross platform, snake game, which is implemented via OpenGL for now, and has a really simple way to port it to other graphics APIs.  
+Also implements a really primitive game engine, that's why it's called GameLibrary.  
+It runs on Linux and Windows, for Mac premake5.lua's have to to be changed to compile right, I'll appreciate pull requests.  
 
 ## Compile & Play
 ```sh
