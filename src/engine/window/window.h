@@ -33,6 +33,10 @@ public:
   inline int Width() const { return _stats.width; }
   inline int Height() const { return _stats.height; }
   inline const char* Name() const { return _stats.name; }
+
+  void SetVSync(bool value);
+
+  void SetStats(Stats stats);
 };
 
 }

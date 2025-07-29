@@ -2,7 +2,7 @@
 
 #include"engine/sge.h"
 
-class Game final{
+class Game{
 public:
   Game(SGE::Window& window);
   ~Game();

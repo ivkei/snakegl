@@ -1,3 +1,5 @@
+#pragma once
+
 //Data structures
 #include<list>
 #include<vector>
@@ -17,3 +19,7 @@
 #include<random>
 #include<cstdlib>
 #include<mutex>
+#include<fstream>
+
+//My utils
+#include"singleton.h"

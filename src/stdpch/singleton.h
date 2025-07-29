@@ -2,8 +2,6 @@
 
 #include"stdpch/stdpch.h"
 
-namespace SGE{
-
 //Phoenix Singleton (after it destroyed, it can be created again, if the program requires one (Ex: Logger, that got destroyed and had to log destruction of another singleton))
 class PhoenixSingleton {
   private:
@@ -212,5 +210,3 @@ class Singleton{
     return _pInstance;
   }
 };
-
-}

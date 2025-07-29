@@ -1,6 +1,6 @@
 #pragma once
 
-#include"singleton.h"
+#include"stdpch/stdpch.h"
 #include"api.h"
 
 #include"glm/vec4.hpp"
@@ -8,7 +8,7 @@
 
 namespace SGE{
 
-//Batch renderer, batch stuff via functions and then render everything in a single draw call to the API via Render()
+//Batch renderer, batch stuff via functions and then render everything in a single draw call to the Render() member function
 class SGE_API Renderer{
 private:
 public:

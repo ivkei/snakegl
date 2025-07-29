@@ -8,7 +8,7 @@
 
 namespace SGE{
 
-//Use address of window as key, when moved or copied ctor will handle the change (todo??)
+//Use address of window as key, when moved or copied ctor will handle the change
 static std::unordered_map<const Window*, GLFWwindow*> addressToWindow;
 
 const Window::Stats Window::Stats::Default = {"Application", 1280, 720};
@@ -121,5 +121,15 @@ void Window::SwapBuffers() const{
   GLFWwindow* pWindow = addressToWindow.at(this);
   glfwSwapBuffers(pWindow);
 }
+
+void Window::SetVSync(bool value){
+  glfwSwapInterval(value);
+}
+
+void Window::SetStats(Stats stats){
+  GLFWwindow* pWindow = addressToWindow.at(this);
+  glfwSetWindowSize(pWindow, stats.width, stats.height);
+  glfwSetWindowTitle(pWindow, stats.name);
+} 
 
 }
