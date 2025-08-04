@@ -32,9 +32,9 @@ public:
   //pos = center of the circle coordinates
   void Circle(glm::vec2 pos, float r, int vertices = 30, glm::vec4 color = glm::vec4(1));
   //pos = center of the circle coordinates
-  void Circle(glm::vec2 pos, float r, int vertices = 30, glm::vec4 centerColor = glm::vec4(1), glm::vec4 circumferenceColor = glm::vec4(1));
+  void Circle(glm::vec2 pos, float r, int vertices, glm::vec4 centerColor, glm::vec4 circumferenceColor);
   //pos = center of the circle coordinates
-  void Circle(glm::vec2 pos, float r, int vertices = 30, bool isRainbow = false);
+  void Circle(glm::vec2 pos, float r, int vertices, bool isRainbow);
 
   void FragShader(const char* path);
   void VertShader(const char* path);

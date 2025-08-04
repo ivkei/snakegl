@@ -21,6 +21,8 @@ public:
   void Bind() const;
   void Unbind() const;
 
+  bool IsValid() const;
+
   //Uniforms
   void SetUniform(const std::string& name, const glm::mat4& mat);
   void SetUniform(const std::string& name, float f0, float f1, float f2, float f3);

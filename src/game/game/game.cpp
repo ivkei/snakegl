@@ -31,7 +31,11 @@ void Game::OnUpdate(float deltaSeconds){
   timer -= deltaSeconds;
 
   SGE::TSRenderer::Instance()->Clear();
-  SGE::TSRenderer::Instance()->Quad(glm::vec2(100, 100), glm::vec2(200, 200), glm::vec4(0.2f, 0.8f, 0.6f, 1));
+  SGE::TSRenderer::Instance()->Quad(glm::vec2(100, 100), glm::vec2(200, 200), glm::vec4(0.2f, 0.8f, 0.6f, 1.0f));
+  SGE::TSRenderer::Instance()->Circle(glm::vec2(400, 500), 100, 30, true);
+  SGE::TSRenderer::Instance()->Circle(glm::vec2(0, 0), 100, 30, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  SGE::TSRenderer::Instance()->Circle(glm::vec2(720, 720), 100, 30, glm::vec4(0.8f, 0.2f, 0.0f, 1.0f), glm::vec4(0.5f, 0.8f, 0.0f, 1.0f));
+  SGE::TSRenderer::Instance()->Trig(glm::vec2(100, 400), glm::vec2(100, 100), glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
   SGE::TSRenderer::Instance()->Render();
 
   if (timer <= 0){

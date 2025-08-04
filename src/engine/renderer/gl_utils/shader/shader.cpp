@@ -120,6 +120,10 @@ void Shader::Unbind() const{
   GLCall(glUseProgram(0));
 }
 
+bool Shader::IsValid() const{
+  return _vid != 0 && _fid != 0;
+}
+
 int Shader::_GetUniformLocation(const std::string& name){
   Bind();
   if (_locationCache.find(name) != _locationCache.end())

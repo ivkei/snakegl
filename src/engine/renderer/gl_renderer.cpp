@@ -8,6 +8,7 @@
 #include"gl_utils/vertexbufferlayout.h"
 #include"gl_utils/vertexarray/vertexarray.h"
 #include"gl_utils/shader/shader.h"
+#include"pch/pch.h"
 
 #include"darray.h"
 
@@ -20,13 +21,14 @@ struct Vertex{
   glm::vec4 color;
 };
 
+//TODO(kei): Create a batch struct??
 static darray<Vertex> vertexBuffer;
 static darray<unsigned int> indexBuffer;
 static bool wasGlewInit = false;
 //Ptr because managed lifetime
 static VertexArray* pVao;
-static int prevVertexCount = 0;
-static int prevIndexCount = 0;
+static int maxVertexCount = 0;
+static int maxIndexCount = 0;
 static unsigned int vboID;
 static unsigned int iboID;
 static bool doClear = false;
@@ -39,7 +41,7 @@ static int BottomLeft(glm::vec2 quad[4]){
   glm::vec2 currentLeast = quad[0];
 
   for (int i = 1; i < 4; ++i){
-    if ((currentLeast.x < quad[i].x && currentLeast.y <= quad[i].y) || (currentLeast.x <= quad[i].x && currentLeast.y < quad[i].y)){
+    if ((currentLeast.x > quad[i].x && currentLeast.y >= quad[i].y) || (currentLeast.x >= quad[i].x && currentLeast.y > quad[i].y)){
       currentLeast = quad[i];
       leastCoordsIndex = 1;
     }
@@ -50,6 +52,8 @@ static int BottomLeft(glm::vec2 quad[4]){
 
 static void PushQuad(glm::vec2 vertexPos0, glm::vec2 vertexPos1, glm::vec2 vertexPos2, glm::vec2 vertexPos3,
                      glm::vec4 vertexColor0, glm::vec4 vertexColor1, glm::vec4 vertexColor2, glm::vec4 vertexColor3){
+  int offset = vertexBuffer.length();
+
   //Vertex buffer
   vertexBuffer.emplace_back(vertexPos0, vertexColor0);
   vertexBuffer.emplace_back(vertexPos1, vertexColor1);
@@ -57,7 +61,6 @@ static void PushQuad(glm::vec2 vertexPos0, glm::vec2 vertexPos1, glm::vec2 verte
   vertexBuffer.emplace_back(vertexPos3, vertexColor3);
 
   //Index buffer
-  int offset = vertexBuffer.length();
   glm::vec2 quad[] = {vertexPos0, vertexPos1, vertexPos2, vertexPos3};
   int bottomLeftIndex = BottomLeft(quad);
 
@@ -72,13 +75,14 @@ static void PushQuad(glm::vec2 vertexPos0, glm::vec2 vertexPos1, glm::vec2 verte
 
 static void PushTrig(glm::vec2 vertexPos0, glm::vec2 vertexPos1, glm::vec2 vertexPos2,
                      glm::vec4 vertexColor0, glm::vec4 vertexColor1, glm::vec4 vertexColor2){
+  int offset = vertexBuffer.length();
+
   //Vertex buffer
   vertexBuffer.emplace_back(vertexPos0, vertexColor0);
   vertexBuffer.emplace_back(vertexPos1, vertexColor1);
   vertexBuffer.emplace_back(vertexPos2, vertexColor2);
 
   //Index buffer
-  int offset = vertexBuffer.length();
   indexBuffer.push_back(0 + offset);
   indexBuffer.push_back(1 + offset);
   indexBuffer.push_back(2 + offset);
@@ -100,6 +104,8 @@ glm::vec4 RadsToColor(float rads){
 }
 
 static void PushCircle(glm::vec2 pos, float r, int vertexCount, bool isRainbow, glm::vec4 centerColor = glm::vec4(1), glm::vec4 circColor = glm::vec4(1)){
+  int offset = vertexBuffer.length();
+
   //Vertex buffer
   vertexBuffer.emplace_back(pos, glm::vec4(isRainbow ? glm::vec4(1) : centerColor));
 
@@ -111,8 +117,6 @@ static void PushCircle(glm::vec2 pos, float r, int vertexCount, bool isRainbow, 
   }
 
   //Index buffer
-  int offset = vertexBuffer.length();
-
   for (int i = 0; i < vertexCount; ++i){
     indexBuffer.emplace_back(0 + offset); //Center
 
@@ -155,8 +159,8 @@ Renderer::Renderer(){
   //Init size of buffers, they still can scale every frame
   GLCall(glBufferData(GL_ARRAY_BUFFER, 10000 * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW));
   GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 10000 * sizeof(unsigned int), nullptr, GL_DYNAMIC_DRAW));
-  prevIndexCount = 10000;
-  prevVertexCount = 10000;
+  maxIndexCount = 10000;
+  maxVertexCount = 10000;
 
   //Vertex Array
   pVao = new VertexArray();
@@ -181,18 +185,22 @@ void Renderer::Render(){
     glClear(GL_COLOR_BUFFER_BIT);
   }
 
+  SGE_LOG_ASSERT(pShader->IsValid(), "Shader is invalid and isnt set, specify fragment and vertex shader please!");
+  pShader->Bind();
+  pVao->Bind();
+
   GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboID));
   GLCall(glBindBuffer(GL_ARRAY_BUFFER, vboID));
 
   //Dont realloc if not needed
-  if (vertexBuffer.length() <= prevVertexCount){
+  if (vertexBuffer.length() <= maxVertexCount){
     GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, vertexBuffer.length() * sizeof(Vertex), vertexBuffer.data()));
   }
   else{
     GLCall(glBufferData(GL_ARRAY_BUFFER, vertexBuffer.length() * sizeof(Vertex), vertexBuffer.data(), GL_DYNAMIC_DRAW));
   }
 
-  if (indexBuffer.length() <= prevIndexCount){
+  if (indexBuffer.length() <= maxIndexCount){
     GLCall(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexBuffer.length() * sizeof(unsigned int), indexBuffer.data()));
   }
   else{
@@ -207,15 +215,15 @@ void Renderer::Render(){
   glClearColor(0, 0, 0, 1);
   doClear = false;
 
-  prevVertexCount = vertexBuffer.length();
-  prevIndexCount = indexBuffer.length();
+  maxVertexCount = std::max(maxVertexCount, (int)vertexBuffer.length());
+  maxIndexCount = std::max(maxIndexCount, (int)indexBuffer.length());
 
   vertexBuffer.clear();
   indexBuffer.clear();
 }
 
 void Renderer::Quad(glm::vec2 pos, glm::vec2 dimensions, glm::vec4 color){
-  PushQuad(pos, pos + dimensions.x, pos + dimensions.y, pos + dimensions,
+  PushQuad(pos, glm::vec2(pos.x + dimensions.x, pos.y), glm::vec2(pos.x, pos.y + dimensions.y), pos + dimensions,
            color, color, color, color);
 }
 
@@ -226,7 +234,7 @@ void Renderer::Quad(glm::vec2 vertexPos0, glm::vec2 vertexPos1, glm::vec2 vertex
 }
 
 void Renderer::Trig(glm::vec2 pos, glm::vec2 dimensions, glm::vec4 color){
-  PushTrig(pos, pos + dimensions.x, pos + dimensions.y,
+  PushTrig(pos, glm::vec2(pos.x + dimensions.x, pos.y), glm::vec2(pos.x, pos.y + dimensions.y),
            color, color, color);
 }
 
