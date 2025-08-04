@@ -2,64 +2,76 @@
 
 #include"GL/glew.h"
 #include"renderer/gl_utils/debug/debug.h"
+#include"logger.h"
 
-inline static unsigned int _CompileShader(unsigned int type, const std::string& source){
-  unsigned int id = glCreateShader(type);
+inline static unsigned int CompileShader(unsigned int type, std::string source){
+  GLCall(unsigned int id = glCreateShader(type));
   const char* srcCStr = source.c_str();
-  glShaderSource(id, 1, &srcCStr, nullptr);
-  glCompileShader(id);
+  GLCall(glShaderSource(id, 1, &srcCStr, nullptr));
+  GLCall(glCompileShader(id));
 
   //Error handling
   int result;
-  glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+  GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));
   //i for int
   //v for vector (array (pointer))
   if (result == GL_FALSE){
     int length;
-    glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+    GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));
     char* info = new char[length];
 
-    glGetShaderInfoLog(id, length, &length, info);
-    std::cout << "\033[31m" << info << "\033[0m" << std::endl;
+    GLCall(glGetShaderInfoLog(id, length, &length, info));
+    SGE_LOG_ERROR("Compiling shader error (", (type == GL_FRAGMENT_SHADER ? "Fragment Shader" : "Vertex Shader"), "): ", info);
 
     delete[] info;
 
-    glDeleteShader(id);
+    GLCall(glDeleteShader(id));
     return 0;
   }
 
   return id;
 }
 
-inline static unsigned int _CreateShader(const std::string& vertexShader, const std::string& fragmentShader){
-  auto program = glCreateProgram();
-  auto vs = _CompileShader(GL_VERTEX_SHADER, vertexShader);
-  auto fs = _CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
+inline static void LinkShader(unsigned int id, unsigned int vid, unsigned int fid){
   //Attach shaders to a program
   //Tells that they are included to be linked
-  glAttachShader(program, vs);
-  glAttachShader(program, fs);
+  GLCall(glAttachShader(id, vid));
+  GLCall(glAttachShader(id, fid));
 
   //Link, creates an executable like a c linker
-  glLinkProgram(program);
+  GLCall(glLinkProgram(id));
 
   //Detach shaders from the program, so the linker doesnt use them anymore
-  glDetachShader(program, vs);
-  glDetachShader(program, fs);
+  GLCall(glDetachShader(id, vid));
+  GLCall(glDetachShader(id, fid));
 
   //Validates the program's ability to be executed, log can then be accessed
-  GLCall(glValidateProgram(program));
+  GLCall(glValidateProgram(id));
+  //Should check this after linking as well, glGetProgramiv(id, GL_LINK_STATUS, &success), glGetProgramInfoLog(id, ...)
+  //Error handling
+  int result;
+  GLCall(glGetProgramiv(id, GL_LINK_STATUS, &result));
+  if (result == GL_FALSE){
+    int length;
+    GLCall(glGetProgramiv(id, GL_INFO_LOG_LENGTH, &length));
+    char* info = new char[length];
+
+    GLCall(glGetProgramInfoLog(id, length, &length, info));
+    SGE_LOG_ERROR("Linking shader program error: ", info);
+
+    delete[] info;
+  }
 
   //Delete the shaders (mark for deletion, deleted after program that uses them)
-  glDeleteShader(vs);
-  glDeleteShader(fs);
-
-  return program;
+  GLCall(glDeleteShader(vid));
+  GLCall(glDeleteShader(fid));
 }
 
-inline static auto _ParseFile(std::string& filePath){
+inline static std::string ParseFile(std::string filePath){
+  SGE_LOG_INFO("Parsing Shader file path (relative): ", filePath);
+  SGE_LOG_INFO("Parsing Shader file path (absolute): ", std::filesystem::absolute(filePath));
   std::fstream stream(filePath);
+  SGE_LOG_INFO("Parsing Shader good state: ", stream.good());
   std::string line;
   std::stringstream shader;
   while (std::getline(stream, line)){
@@ -69,18 +81,35 @@ inline static auto _ParseFile(std::string& filePath){
   return shader.str(); 
 }
 
-
-Shader::Shader(const std::string& vFilepath, const std::string& fFilepath)
-: _id(0), _vFilepath(vFilepath), _fFilepath(fFilepath){
-
-  std::string vSource = _ParseFile(_vFilepath);
-  std::string fSource = _ParseFile(_fFilepath);
-
-  _id = _CreateShader(vSource, fSource);
+Shader::Shader()
+: _id(0), _fid(0), _vid(0){
+  GLCall(_id = glCreateProgram());
 }
 
 Shader::~Shader(){
   GLCall(glDeleteProgram(_id));
+}
+
+void Shader::Vert(const char* path){
+  _vid = CompileShader(GL_VERTEX_SHADER, ParseFile(path).c_str());
+
+  if (_fid != 0){
+    LinkShader(_id, _vid, _fid);
+    SGE_LOG_INFO("Linking program");
+  }
+
+  _locationCache.clear();
+}
+
+void Shader::Frag(const char* path){
+  _fid = CompileShader(GL_FRAGMENT_SHADER, ParseFile(std::string(path)).c_str());
+
+  if (_vid != 0){
+    LinkShader(_id, _vid, _fid);
+    SGE_LOG_INFO("Linking program");
+  }
+
+  _locationCache.clear();
 }
 
 void Shader::Bind() const{
@@ -92,6 +121,7 @@ void Shader::Unbind() const{
 }
 
 int Shader::_GetUniformLocation(const std::string& name){
+  Bind();
   if (_locationCache.find(name) != _locationCache.end())
     //Cache hit
     return _locationCache[name];
@@ -101,7 +131,7 @@ int Shader::_GetUniformLocation(const std::string& name){
   _locationCache.emplace(name, location);
 
   if (location == -1)
-    std::cout << "\033[32m" << "[Warning] The uniform " << '\"' << name << '\"' << " couldnt be found!" << "\033[0m" << std::endl;
+    SGE_LOG_WARNING("Uniform couldn't be found, name: ", name);
 
   return location;
 }

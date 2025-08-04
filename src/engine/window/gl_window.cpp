@@ -2,7 +2,7 @@
 
 #include"GLFW/glfw3.h"
 
-#include"stdpch/stdpch.h"
+#include"pch/pch.h"
 #include"logger.h"
 #include"keys.h"
 
@@ -11,7 +11,7 @@ namespace SGE{
 //Use address of window as key, when moved or copied ctor will handle the change
 static std::unordered_map<const Window*, GLFWwindow*> addressToWindow;
 
-const Window::Stats Window::Stats::Default = {"Application", 1280, 720};
+const Window::Stats Window::Stats::Default = {"Application", 1280, 720, true};
 
 static std::unordered_map<int, void(*)()> glfwKeyToFuncCallback;
 void KeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods){
@@ -48,6 +48,9 @@ Window::Window(Stats stats)
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //Uncomment to use core profile
   //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); //Uncomment to use compatiblity profile
 
+  //Unresizable
+  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
   //Create a windowed mode window and its OpenGL context
   GLFWwindow* pWindow(glfwCreateWindow(stats.width, stats.height, stats.name, NULL, NULL));
   if (!pWindow){
@@ -64,6 +67,8 @@ Window::Window(Stats stats)
 
   //Set callbacks
   glfwSetKeyCallback(pWindow, KeyCallback);
+
+  glViewport(0, 0, stats.width, stats.height);
 }
 
 void Window::Bind() const{
@@ -129,7 +134,9 @@ void Window::SetVSync(bool value){
 void Window::SetStats(Stats stats){
   GLFWwindow* pWindow = addressToWindow.at(this);
   glfwSetWindowSize(pWindow, stats.width, stats.height);
+  glViewport(0, 0, stats.width, stats.height);
   glfwSetWindowTitle(pWindow, stats.name);
+  glfwWindowHint(GLFW_RESIZABLE, stats.resizable);
 } 
 
 }

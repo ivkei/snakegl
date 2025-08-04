@@ -1,8 +1,8 @@
 project "glfw"
-  pic "on"
 	kind "StaticLib"
 	language "C"
 	staticruntime "on"
+  pic "on"
 
 	targetdir ("../../build/bin/")
 	objdir ("../../build/obj/")

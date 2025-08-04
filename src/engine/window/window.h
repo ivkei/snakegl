@@ -10,6 +10,7 @@ public:
     const char* name;
     int width;
     int height;
+    bool resizable;
 
     const static Stats Default;
   };

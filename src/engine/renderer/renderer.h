@@ -1,7 +1,8 @@
 #pragma once
 
-#include"stdpch/stdpch.h"
+#include"pch/pch.h"
 #include"api.h"
+#include"singleton.h"
 
 #include"glm/vec4.hpp"
 #include"glm/mat4x4.hpp"
@@ -9,8 +10,9 @@
 namespace SGE{
 
 //Batch renderer, batch stuff via functions and then render everything in a single draw call to the Render() member function
+//To use accesss SGE::TSRenderer::Instance()
+//Dont forget to specify shaders before rendering
 class SGE_API Renderer{
-private:
 public:
   Renderer();
   ~Renderer();
@@ -22,7 +24,7 @@ public:
   void Quad(glm::vec2 vertexPos0, glm::vec2 vertexPos1, glm::vec2 vertexPos2, glm::vec2 vertexPos3,
             glm::vec4 vertexColor0, glm::vec4 vertexColor1, glm::vec4 vertexColor2, glm::vec4 vertexColor3);
 
-  //pos = bottom-left vertex pos, dimensions = base width, height, triangle = isosceles
+  //pos = bottom-left vertex pos, dimensions = base width, height, triangle = right
   void Trig(glm::vec2 pos, glm::vec2 dimensions, glm::vec4 color = glm::vec4(1));
   void Trig(glm::vec2 vertexPos0, glm::vec2 vertexPos1, glm::vec2 vertexPos2,
             glm::vec4 vertexColor0, glm::vec4 vertexColor1, glm::vec4 vertexColor2);

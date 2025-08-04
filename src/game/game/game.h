@@ -4,7 +4,7 @@
 
 class Game{
 public:
-  Game(SGE::Window& window);
+  Game(SGE::Window& window, std::string execDir);
   ~Game();
 
   void OnUpdate(float deltaSeconds);

@@ -1,22 +1,23 @@
 #pragma once
 
-#include"stdpch/stdpch.h"
+#include"pch/pch.h"
 
 #include"glm/glm.hpp"
 
 class Shader{
 private:
   unsigned int _id;
-  std::string _fFilepath;
-  std::string _vFilepath;
+  unsigned int _fid;
+  unsigned int _vid;
   std::unordered_map<std::string, int> _locationCache;
 
   int _GetUniformLocation(const std::string& name);
-
 public:
-  Shader(const std::string& vFilepath, const std::string& fFilePath);
+  Shader();
   ~Shader();
 
+  void Frag(const char* path);
+  void Vert(const char* path);
   void Bind() const;
   void Unbind() const;
 

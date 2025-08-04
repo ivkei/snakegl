@@ -1,6 +1,6 @@
 #pragma once
 
-#include"stdpch/stdpch.h"
+#include"pch/pch.h"
 
 //Phoenix Singleton (after it destroyed, it can be created again, if the program requires one (Ex: Logger, that got destroyed and had to log destruction of another singleton))
 class PhoenixSingleton {
@@ -174,7 +174,7 @@ struct SingleThreaded{
 };
 template<class T>
 struct MultiThreaded{
-  using SingletonInstance = volatile T;
+  using SingletonInstance = T;
   using LockGuard = std::lock_guard<std::mutex>;
   inline static std::mutex mutex{};
 };

@@ -1,11 +1,16 @@
 #include"gameapplication.h"
 
-#include"stdpch/stdpch.h"
+#include<chrono>
+#include<filesystem>
 
-GameApplication::GameApplication(){
-  SGE::Window::Stats stats = {"SnakeGL", 720, 720};
+GameApplication::GameApplication(std::string argv0){
+  SGE::Window::Stats stats = {"SnakeGL", 720, 720, false};
   _pWindow = new SGE::Window(stats);
-  _pGame = new Game(*_pWindow);
+
+  std::string execDir = std::filesystem::absolute(std::filesystem::current_path()/argv0).parent_path().string() + "/";
+  SGE_LOG_INFO("Exec dir: ", execDir);
+
+  _pGame = new Game(*_pWindow, execDir);
 }
 
 GameApplication::~GameApplication(){

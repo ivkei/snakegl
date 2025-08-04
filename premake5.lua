@@ -13,9 +13,6 @@ runtimeResDir = path.getrelative("%{prj.location}/build/bin/", "%{prj.location}/
 compiletimeResDir = path.getabsolute("%{prj.location}/res/")
 compiletimeBuildDir = path.getabsolute("%{prj.location}/build/")
 
-pchheader "src/stdpch/stdpch.h"
-pchsource "src/stdpch/stdpch.cpp"
-
 project "snakeglgame"
   language "C++"
   cppdialect "C++23"
@@ -81,7 +78,9 @@ filter "configurations:Release"
     postbuildcommands{
       "{MKDIR} " .. compiletimeBuildDir .. "/snakegl",
       "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/snakegl",
-      "{COPYDIR} " .. compiletimeBuildDir .. "/bin " .. compiletimeBuildDir .. "/snakegl"
+      "{COPYDIR} " .. compiletimeBuildDir .. "/bin " .. compiletimeBuildDir .. "/snakegl",
+      "{DELETE} "  .. compiletimeBuildDir .. "/snakegl/bin/*.a",
+      "{DELETE} "  .. compiletimeBuildDir .. "/snakegl/bin/*.lib"
     }
 
 project "snakeglengine"
@@ -90,6 +89,9 @@ project "snakeglengine"
   staticruntime "On"
   kind "SharedLib"
   pic "on"
+
+  pchheader "src/engine/pch/pch.h"
+  pchsource "src/engine/pch/pch.cpp"
 
   targetdir("build/bin/")
   objdir("build/obj/")

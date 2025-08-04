@@ -20,6 +20,9 @@
 #include<cstdlib>
 #include<mutex>
 #include<fstream>
-
-//My utils
-#include"singleton.h"
+#include<initializer_list>
+#include<filesystem>
+#include<malloc.h>
+#include<cstdlib>
+#include<stdexcept>
+#include<cstring>

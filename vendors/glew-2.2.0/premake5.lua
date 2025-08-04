@@ -1,33 +1,34 @@
 project "glew"
-pic "on"
-kind "StaticLib"
-language "C"
+  kind "StaticLib"
+  language "C"
+  staticruntime "on"
+  pic "on"
 
-targetdir("../../build/bin/")
-objdir("../../build/obj/")
-location("../../build/")
+  targetdir("../../build/bin/")
+  objdir("../../build/obj/")
+  location("../../build/")
 
-files
-{
-  "src/glew.c",
-  "include/**.h"
-}
+  files
+  {
+    "src/glew.c",
+    "include/**.h"
+  }
 
-includedirs
-{
-  "include"
-}
+  includedirs
+  {
+    "include"
+  }
 
-defines
-{
-  "GLEW_STATIC",
-  "_CRT_SECURE_NO_WARNINGS"
-}
+  defines
+  {
+    "GLEW_STATIC",
+    "_CRT_SECURE_NO_WARNINGS"
+  }
 
-filter "configurations:Debug"
-    runtime "Debug"
-    symbols "on"
+  filter "configurations:Debug"
+      runtime "Debug"
+      symbols "on"
 
-filter "configurations:Release"
-    runtime "Release"
-    optimize "on"
+  filter "configurations:Release"
+      runtime "Release"
+      optimize "on"
