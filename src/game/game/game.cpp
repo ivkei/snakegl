@@ -33,8 +33,8 @@ Game::Game(SGE::Window& window)
 
   SGE_LOG_INFO("Exec dir: ", execDir.string());
 
-  SGE::TSRenderer::Instance()->FragShader((execDir / RES_DIR / "shaders/fragP.glsl").c_str(), true);
-  SGE::TSRenderer::Instance()->VertShader((execDir / RES_DIR / "shaders/vertP.glsl").c_str(), true);
+  SGE::TSRenderer::Instance()->FragShader((execDir / RES_DIR / "shaders/fragP.glsl").string().c_str(), true); //Indirect because windows likes to return wchar* instead of char*
+  SGE::TSRenderer::Instance()->VertShader((execDir / RES_DIR / "shaders/vertP.glsl").string().c_str(), true);
   SGE::TSRenderer::Instance()->Uniform("uProj", proj);
 
   SGE_LOG_INFO("Done specifying shaders");

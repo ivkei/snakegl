@@ -9,10 +9,6 @@ configurations
 include "vendors/glfw-3.4/"
 include "vendors/glew-2.2.0/"
 
-runtimeResDir = path.getrelative("%{prj.location}/build/bin/", "%{prj.location}/build/res/")
-compiletimeResDir = path.getabsolute("%{prj.location}/res/")
-compiletimeBuildDir = path.getabsolute("%{prj.location}/build/")
-
 project "snakeglgame"
   language "C++"
   cppdialect "C++23"
@@ -20,7 +16,24 @@ project "snakeglgame"
 
   targetdir("build/bin/")
   objdir("build/obj/")
-  location("build/")
+
+  filter "system:windows"
+    defines
+    {
+      "_SNAKEGL_WINDOWS",
+    }
+    runtimeResDir = path.getrelative("build/bin/", "build/res/")
+    compiletimeResDir = path.getabsolute("res/")
+    compiletimeBuildDir = path.getabsolute("build/")
+
+  filter "system:linux"
+    defines
+    {
+      "_SNAKEGL_LINUX",
+    }
+    runtimeResDir = path.getrelative("%{prj.location}/build/bin/", "%{prj.location}/build/res/")
+    compiletimeResDir = path.getabsolute("%{prj.location}/res/")
+    compiletimeBuildDir = path.getabsolute("%{prj.location}/build/")
 
   files
   {
@@ -43,27 +56,31 @@ project "snakeglgame"
   }
 
   postbuildcommands{
-    "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/"
+    "{COPYDIR} \"" .. compiletimeResDir .. "\" \"" .. compiletimeBuildDir .. "\""
   }
 
   links{
     "snakeglengine"
   }
 
-  filter "system:windows"
-    defines
-    {
-      "_SNAKEGL_WINDOWS",
-    }
-
-  filter "system:linux"
-    defines
-    {
-      "_SNAKEGL_LINUX",
-    }
-
   filter {"system:windows", "configurations:Release"}
     linkoptions { "/ENTRY:mainCRTStartup" }
+    postbuildcommands{
+      "{MKDIR} " .. path.join(compiletimeBuildDir, "snakegl") .. "",
+      "{COPYDIR} \"" .. compiletimeResDir .. "\" \"" .. path.join(compiletimeBuildDir, "snakegl") .. "\"",
+      "{MKDIR} " .. path.join(compiletimeBuildDir, "snakegl", "bin") .. "",
+      "{COPYFILE} \"" .. path.join(compiletimeBuildDir, "bin", "snakeglgame.exe") .. "\" \"" .. path.join(compiletimeBuildDir, "snakegl", "bin") .. "\"",
+      "{COPYFILE} \"" .. path.join(compiletimeBuildDir, "bin", "libsnakeglengine.dll") .. "\" \"" .. path.join(compiletimeBuildDir, "snakegl", "bin") .. "\"",
+    }
+
+  filter {"system:linux", "configurations:Release"}
+    postbuildcommands{
+      "{MKDIR} " .. path.join(compiletimeBuildDir, "snakegl") .. "",
+      "{COPYDIR} \"" .. compiletimeResDir .. "\" \"" .. path.join(compiletimeBuildDir, "snakegl") .. "\"",
+      "{MKDIR} " .. path.join(compiletimeBuildDir, "snakegl", "bin") .. "",
+      "{COPYFILE} \"" .. path.join(compiletimeBuildDir, "bin", "snakeglgame") .. "\" \"" .. path.join(compiletimeBuildDir, "snakegl", "bin") .. "\"",
+      "{COPYFILE} \"" .. path.join(compiletimeBuildDir, "bin", "libsnakeglengine.so") .. "\" \"" .. path.join(compiletimeBuildDir, "snakegl", "bin") .. "\"",
+    }
 
   filter "configurations:Debug"
     kind "ConsoleApp"
@@ -78,13 +95,6 @@ project "snakeglgame"
     runtime "Release"
     optimize "on"
     defines "_SNAKEGL_RELEASE"
-    postbuildcommands{
-      "{MKDIR} " .. compiletimeBuildDir .. "/snakegl",
-      "{COPYDIR} " .. compiletimeResDir .. "/ " .. compiletimeBuildDir .. "/snakegl",
-      "{COPYDIR} " .. compiletimeBuildDir .. "/bin " .. compiletimeBuildDir .. "/snakegl",
-      "{DELETE} "  .. compiletimeBuildDir .. "/snakegl/bin/*.a",
-      "{DELETE} "  .. compiletimeBuildDir .. "/snakegl/bin/*.lib"
-    }
 
 project "snakeglengine"
   language "C++"
@@ -98,7 +108,6 @@ project "snakeglengine"
 
   targetdir("build/bin/")
   objdir("build/obj/")
-  location("build/")
 
   files
   {

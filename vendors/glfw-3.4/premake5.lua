@@ -6,7 +6,6 @@ project "glfw"
 
 	targetdir ("../../build/bin/")
 	objdir ("../../build/obj/")
-  location("../../build/")
 
 	files
 	{
