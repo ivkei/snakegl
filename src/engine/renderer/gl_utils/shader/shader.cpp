@@ -90,8 +90,13 @@ Shader::~Shader(){
   GLCall(glDeleteProgram(_id));
 }
 
-void Shader::Vert(const char* path){
-  _vid = CompileShader(GL_VERTEX_SHADER, ParseFile(path).c_str());
+void Shader::Vert(const char* string, bool isPath){
+  if (isPath){
+    _vid = CompileShader(GL_VERTEX_SHADER, ParseFile(string).c_str());
+  }
+  else{
+    _vid = CompileShader(GL_VERTEX_SHADER, string);
+  }
 
   if (_fid != 0){
     LinkShader(_id, _vid, _fid);
@@ -101,8 +106,13 @@ void Shader::Vert(const char* path){
   _locationCache.clear();
 }
 
-void Shader::Frag(const char* path){
-  _fid = CompileShader(GL_FRAGMENT_SHADER, ParseFile(std::string(path)).c_str());
+void Shader::Frag(const char* string, bool isPath){
+  if (isPath){
+    _fid = CompileShader(GL_FRAGMENT_SHADER, ParseFile(string).c_str());
+  }
+  else{
+    _fid = CompileShader(GL_FRAGMENT_SHADER, string);
+  }
 
   if (_vid != 0){
     LinkShader(_id, _vid, _fid);

@@ -2,8 +2,8 @@
 
 #include"gameapplication/gameapplication.h"
 
-extern SGE::Application* SGE::CreateApplication(int argc, char** argv){
-  return new GameApplication(argv[0]);
+extern SGE::Application* SGE::CreateApplication(){
+  return new GameApplication();
 }
 
 SGE_ENTRY_POINT

@@ -21,9 +21,11 @@ struct Vertex{
   glm::vec4 color;
 };
 
-//TODO(kei): Create a batch struct??
+//Batch
 static darray<Vertex> vertexBuffer;
 static darray<unsigned int> indexBuffer;
+
+//State info
 static bool wasGlewInit = false;
 //Ptr because managed lifetime
 static VertexArray* pVao;
@@ -256,13 +258,28 @@ void Renderer::Circle(glm::vec2 pos, float r, int vertices, bool isRainbow){
   PushCircle(pos, r, vertices, true);
 }
 
-void Renderer::FragShader(const char* path){
-  pShader->Frag(path);
+void Renderer::FragShader(const char* string, bool isPath){
+  pShader->Frag(string, isPath);
 }
 
-void Renderer::VertShader(const char* path){
-  pShader->Vert(path);
+void Renderer::VertShader(const char* string, bool isPath){
+  pShader->Vert(string, isPath);
 }
+
+const char* Renderer::DefaultFragShader = 
+"#version 330 core"
+"layout(location = 0) out vec4 oCol;"
+"void main(){"
+"  oCol = vec4(1, 1, 1, 1);"
+"}"
+;
+const char* Renderer::DefaultVertShader =
+"#version 330 core"
+"layout(location = 0) in vec4 iPos;"
+"void main(){"
+" gl_Position = iPos;"
+"}"
+;
 
 void Renderer::Uniform(const char* name, int i){
   pShader->SetUniform(name, i);
@@ -279,6 +296,8 @@ void Renderer::Uniform(const char* name, glm::mat4 m){
 void Renderer::Clear(glm::vec4 color){
   glClearColor(color.r, color.g, color.b, color.a);
   doClear = true;
+  vertexBuffer.clear();
+  indexBuffer.clear();
 }
 
 }

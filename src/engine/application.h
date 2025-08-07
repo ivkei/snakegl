@@ -8,14 +8,15 @@ struct Application{
   virtual void Run() {}
 };
 
-extern Application* CreateApplication(int argc, char** argv);
+extern Application* CreateApplication();
 
 }
 
 #define SGE_ENTRY_POINT\
-  int main(int argc, char** argv){\
+  int main(){\
     SGE_LOG_INFO("Main starts execution");\
-    SGE::Application* pApp = SGE::CreateApplication(argc, argv);\
+    SGE::Application* pApp = SGE::CreateApplication();\
     pApp->Run();\
     delete pApp;\
+    return 0;\
   }

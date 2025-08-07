@@ -36,8 +36,13 @@ public:
   //pos = center of the circle coordinates
   void Circle(glm::vec2 pos, float r, int vertices, bool isRainbow);
 
-  void FragShader(const char* path);
-  void VertShader(const char* path);
+  //Interprets first arg as source if second is false, otherwise parses a file via a file path, use SGE::GetExecDir() if needed
+  void FragShader(const char* string, bool isPath = false);
+  //Interprets first arg as source if second is false, otherwise parses a file via a file path, use SGE::GetExecDir() if needed
+  void VertShader(const char* string, bool isPath = false);
+
+  static const char* DefaultFragShader;
+  static const char* DefaultVertShader;
 
   void Uniform(const char* name, int i);
   void Uniform(const char* name, float f);

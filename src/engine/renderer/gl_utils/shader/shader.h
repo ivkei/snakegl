@@ -16,8 +16,10 @@ public:
   Shader();
   ~Shader();
 
-  void Frag(const char* path);
-  void Vert(const char* path);
+  //Interprets first arg as source if second is false, otherwise parses a file via a file path, use SGE::GetExecDir() if needed
+  void Frag(const char* string, bool isPath = false);
+  //Interprets first arg as source if second is false, otherwise parses a file via a file path, use SGE::GetExecDir() if needed
+  void Vert(const char* string, bool isPath = false);
   void Bind() const;
   void Unbind() const;
 

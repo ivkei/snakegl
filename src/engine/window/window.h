@@ -2,6 +2,8 @@
 
 #include"api.h"
 
+#include"pch/pch.h"
+
 namespace SGE{
 
 class SGE_API Window final{
@@ -23,7 +25,7 @@ public:
   ~Window();
 
   bool ShouldTerminate() const;
-  void SetKeyCallback(int key, void(*func)());
+  void SetKeyCallback(int key, std::function<void()> func);
   void DeleteCallback(int key);
   void PollEvents() const;
   void SwapBuffers() const;

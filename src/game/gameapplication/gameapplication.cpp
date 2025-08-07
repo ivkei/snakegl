@@ -3,14 +3,10 @@
 #include<chrono>
 #include<filesystem>
 
-GameApplication::GameApplication(std::string argv0){
-  SGE::Window::Stats stats = {"SnakeGL", 720, 720, false};
+GameApplication::GameApplication(){
+  SGE::Window::Stats stats = {"SnakeGL", 720, 792, false};
   _pWindow = new SGE::Window(stats);
-
-  std::string execDir = std::filesystem::absolute(std::filesystem::current_path()/argv0).parent_path().string() + "/";
-  SGE_LOG_INFO("Exec dir: ", execDir);
-
-  _pGame = new Game(*_pWindow, execDir);
+  _pGame = new Game(*_pWindow);
 }
 
 GameApplication::~GameApplication(){

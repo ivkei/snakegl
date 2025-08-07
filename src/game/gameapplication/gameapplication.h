@@ -8,7 +8,7 @@ private:
   SGE::Window* _pWindow;
   Game* _pGame;
 public:
-  GameApplication(std::string argv0);
+  GameApplication();
   ~GameApplication() override;
 
   void Run() override;

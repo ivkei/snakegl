@@ -13,7 +13,7 @@ static std::unordered_map<const Window*, GLFWwindow*> addressToWindow;
 
 const Window::Stats Window::Stats::Default = {"Application", 1280, 720, true};
 
-static std::unordered_map<int, void(*)()> glfwKeyToFuncCallback;
+static std::unordered_map<int, std::function<void()>> glfwKeyToFuncCallback;
 void KeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods){
   if (action == GLFW_PRESS){
     try{
@@ -104,7 +104,7 @@ int KeyToGLFWKey(int key){
   }
 }
 
-void Window::SetKeyCallback(int key, void(*func)()){
+void Window::SetKeyCallback(int key, std::function<void()> func){
   int glfwKey = KeyToGLFWKey(key);
   SGE_LOG_ASSERT(glfwKey != -1, "Invalid key passed to set callback");
 
