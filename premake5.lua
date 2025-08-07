@@ -16,6 +16,7 @@ project "snakeglgame"
 
   targetdir("build/bin/")
   objdir("build/obj/")
+  location("build/")
 
   filter "system:windows"
     defines
@@ -108,6 +109,7 @@ project "snakeglengine"
 
   targetdir("build/bin/")
   objdir("build/obj/")
+  location("build/")
 
   files
   {

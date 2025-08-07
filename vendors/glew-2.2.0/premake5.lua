@@ -6,6 +6,7 @@ project "glew"
 
   targetdir("../../build/bin/")
   objdir("../../build/obj/")
+  location("build/")
 
   files
   {
