@@ -4,8 +4,8 @@
 #include<filesystem>
 
 GameApplication::GameApplication(){
-  _pWindow = new SGE::Window(SnakeGame::WindowStats);
-  _pGame = new SnakeGame(*_pWindow);
+  _pWindow = new SGE::Window(Game::WindowStats);
+  _pGame = new Game(*_pWindow);
 }
 
 GameApplication::~GameApplication(){

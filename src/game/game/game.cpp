@@ -5,9 +5,9 @@
 
 #include<filesystem>
 
-SGE::Window::Stats SnakeGame::WindowStats = {"SnakeGL", 720, 792, false};
+SGE::Window::Stats Game::WindowStats = {"SnakeGL", 720, 792, false};
 
-static std::unique_ptr<Snake> GetInitSnake(SnakeGame& game){
+static std::unique_ptr<Snake> GetInitSnake(Game& game){
   return std::make_unique<Snake>(3, glm::vec2(3, 5), glm::ivec2(-1, 0), glm::vec4(0.67f,0.85f,0.93f,1.0f), glm::ivec2(1, 0));
 }
 
@@ -19,12 +19,16 @@ static std::unique_ptr<Field> GetInitField(){
   return std::make_unique<Field>(10, 11, 0.95f, 0.95f, 0.025f, 0.025f, glm::vec4(0.43f, 0.76f, 0.46f, 1.0), glm::vec4(0.025f, 0.25f, 0.167f, 1.0f));
 }
 
-void SnakeGame::Reset(){
-  _pSnake = GetInitSnake(*this);
-  _pAppleManager = GetInitAppleManager(*_pField, *_pSnake);
+void Game::Reset(){
+  //If new was created, the callbacks probably would not be happy, considering the fact that I passed the Snake* to them
+  auto initSnake = GetInitSnake(*this);
+  *_pSnake = *initSnake;
+
+  auto initAppleManager = GetInitAppleManager(*_pField, *_pSnake);
+  *_pAppleManager = *initAppleManager;
 }
 
-SnakeGame::SnakeGame(SGE::Window& window)
+Game::Game(SGE::Window& window)
 : _pField(GetInitField()),
   _pAppleManager(nullptr),
   _pSnake(GetInitSnake(*this)){
@@ -36,7 +40,7 @@ SnakeGame::SnakeGame(SGE::Window& window)
   TSLogic::Instance()->SetKeyCallbacks(&window, _pSnake.get(), this);
 }
 
-SnakeGame::~SnakeGame(){
+Game::~Game(){
 }
 
 static float fpsTimer = 1;
@@ -45,7 +49,7 @@ static float fpsFrames = 0;
 static const float snakeMovesEverySeconds = TSLogic::Instance()->ExecuteEverySeconds;
 static float snakeMoveTimer = snakeMovesEverySeconds;
 
-void SnakeGame::OnUpdate(float deltaSeconds){
+void Game::OnUpdate(float deltaSeconds){
   ++fpsFrames;
   fpsTimer -= deltaSeconds;
 

@@ -6,7 +6,7 @@
 class GameApplication : public SGE::Application{
 private:
   SGE::Window* _pWindow;
-  SnakeGame* _pGame;
+  Game* _pGame;
 public:
   GameApplication();
   ~GameApplication() override;

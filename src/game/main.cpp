@@ -7,6 +7,3 @@ extern SGE::Application* SGE::CreateApplication(){
 }
 
 SGE_ENTRY_POINT
-
-//TODO(kei): Refactor game part
-//View takes necessary stuff for drawing??

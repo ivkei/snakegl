@@ -5,7 +5,7 @@
 
 float Logic::ExecuteEverySeconds = 0.2f;
 
-void Logic::SetKeyCallbacks(SGE::Window* pWindow, Snake* pSnake, SnakeGame* pGame){
+void Logic::SetKeyCallbacks(SGE::Window* pWindow, Snake* pSnake, Game* pGame){
   pWindow->SetKeyCallback(SNAKEGL_KEY_W, [pSnake = pSnake](){pSnake->QueryMoveUp(); SGE_LOG_INFO("W");});
   pWindow->SetKeyCallback(SNAKEGL_KEY_A, [pSnake = pSnake](){pSnake->QueryMoveLeft(); SGE_LOG_INFO("A");});
   pWindow->SetKeyCallback(SNAKEGL_KEY_S, [pSnake = pSnake](){pSnake->QueryMoveDown(); SGE_LOG_INFO("S");});
@@ -14,7 +14,7 @@ void Logic::SetKeyCallbacks(SGE::Window* pWindow, Snake* pSnake, SnakeGame* pGam
   pWindow->SetKeyCallback(SNAKEGL_KEY_SPC, [pGame](){pGame->Reset();});
 }
 
-void Logic::Execute(Snake& snake, Field& field, AppleManager& appleManager, SnakeGame& game){
+void Logic::Execute(Snake& snake, Field& field, AppleManager& appleManager, Game& game){
   glm::vec2 prevHeadPos = snake.MoveHead();
 
   int appleIndex = snake.TouchingAppleIndex(appleManager);

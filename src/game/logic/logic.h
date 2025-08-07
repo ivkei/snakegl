@@ -12,8 +12,9 @@
 class Logic{
 private:
 public:
-  void SetKeyCallbacks(SGE::Window* pWindow, Snake* pSnake, SnakeGame* pGame);
-  void Execute(Snake& snake, Field& field, AppleManager& appleManager, SnakeGame& game);
+  //Call upon switching snake's address!
+  void SetKeyCallbacks(SGE::Window* pWindow, Snake* pSnake, Game* pGame);
+  void Execute(Snake& snake, Field& field, AppleManager& appleManager, Game& game);
   static float ExecuteEverySeconds;
 };
 

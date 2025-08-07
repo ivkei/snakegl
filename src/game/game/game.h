@@ -8,14 +8,14 @@
 
 #include<memory>
 
-class SnakeGame{
+class Game{
 private:
   std::unique_ptr<Field> _pField;
   std::unique_ptr<Snake> _pSnake;
   std::unique_ptr<AppleManager> _pAppleManager;
 public:
-  SnakeGame(SGE::Window& window);
-  ~SnakeGame();
+  Game(SGE::Window& window);
+  ~Game();
 
   void OnUpdate(float deltaSeconds);
   void Reset();
