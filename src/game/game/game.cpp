@@ -2,8 +2,10 @@
 
 #include"glm/gtc/matrix_transform.hpp"
 
+#include<filesystem>
+
 static std::unique_ptr<Snake> GetInitSnake(Game& game){
-  return std::make_unique<Snake>(3, glm::vec2(3, 5), glm::vec2(-1, 0), [&](){game.Reset();});
+  return std::make_unique<Snake>(3, glm::vec2(3, 5), glm::vec2(-1, 0), [&](){game.Reset();}, [&](){game.Reset();});
 }
 
 static std::unique_ptr<AppleManager> GetInitAppleManager(Field& field, Snake& snake){
@@ -27,17 +29,17 @@ Game::Game(SGE::Window& window)
 
   SGE_LOG_INFO("Start specifying shaders");
 
-  std::string execDir = SGE::GetExecDir();
+  std::filesystem::path execDir = SGE::GetExecDir();
 
-  SGE_LOG_INFO("Exec dir: ", execDir);
+  SGE_LOG_INFO("Exec dir: ", execDir.string());
 
-  SGE::TSRenderer::Instance()->FragShader((execDir + RES_DIR + "shaders/fragP.glsl").c_str(), true);
-  SGE::TSRenderer::Instance()->VertShader((execDir + RES_DIR + "shaders/vertP.glsl").c_str(), true);
+  SGE::TSRenderer::Instance()->FragShader((execDir / RES_DIR / "shaders/fragP.glsl").c_str(), true);
+  SGE::TSRenderer::Instance()->VertShader((execDir / RES_DIR / "shaders/vertP.glsl").c_str(), true);
   SGE::TSRenderer::Instance()->Uniform("uProj", proj);
 
   SGE_LOG_INFO("Done specifying shaders");
 
-  SGE_LOG_INFO("Shader dir: ", (execDir + RES_DIR + "shaders/"));
+  SGE_LOG_INFO("Shader dir: ", (execDir / RES_DIR / "shaders"));
 
   _pAppleManager = GetInitAppleManager(*_pField, *_pSnake);
 

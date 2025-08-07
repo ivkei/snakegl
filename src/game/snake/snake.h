@@ -28,13 +28,14 @@ private:
   SnakeHead _head;
   std::vector<SnakeUnit> _bodyUnits;
   std::function<void()> _gameOver;
+  std::function<void()> _win;
   glm::ivec2 _moveDir;
   bool _didMove;
   glm::ivec2 _queriedMoveDirNextMove;
 public:
   //initDirOfBodyFromHead should either be UP_VEC, DW_VEC, LT_VEC, RT_VEC
   //initLength includes the head
-  Snake(int initLength, glm::vec2 initHeadPos, glm::vec2 initDirOfBodyFromHead, std::function<void()> gameOver);
+  Snake(int initLength, glm::vec2 initHeadPos, glm::vec2 initDirOfBodyFromHead, std::function<void()> gameOver, std::function<void()> win);
   ~Snake();
 
   void Draw(Field& field) const;

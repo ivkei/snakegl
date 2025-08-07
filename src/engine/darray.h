@@ -3,8 +3,10 @@
 #ifndef _KDATA_DARRAY_H
 #define _KDATA_DARRAY_H
 
-#include"pch/pch.h"
+#include<cstdlib>
 #include"logger.h"
+#include<cstring>
+#include<memory>
 
 //Return -1 if not found
 template<class T, class U>

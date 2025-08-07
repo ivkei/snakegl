@@ -3,7 +3,6 @@
 #include"GL/glew.h"
 
 #include"renderer/gl_utils/debug/debug.h"
-#include"pch/pch.h"
 #include"logger.h"
 
 struct VertexBufferLayoutElement{

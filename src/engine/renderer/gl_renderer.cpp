@@ -1,3 +1,5 @@
+#include"src/engine/pch/pch.h"
+
 #include"renderer.h"
 
 #include"GL/glew.h"
@@ -8,7 +10,6 @@
 #include"gl_utils/vertexbufferlayout.h"
 #include"gl_utils/vertexarray/vertexarray.h"
 #include"gl_utils/shader/shader.h"
-#include"pch/pch.h"
 
 #include"darray.h"
 

@@ -1,3 +1,5 @@
+#include"src/engine/pch/pch.h"
+
 #include"shader.h"
 
 #include"GL/glew.h"
@@ -68,7 +70,7 @@ inline static void LinkShader(unsigned int id, unsigned int vid, unsigned int fi
 }
 
 inline static std::string ParseFile(std::string filePath){
-  SGE_LOG_INFO("Parsing Shader file path (relative): ", filePath);
+  SGE_LOG_INFO("Parsing Shader file path: ", filePath);
   SGE_LOG_INFO("Parsing Shader file path (absolute): ", std::filesystem::absolute(filePath));
   std::fstream stream(filePath);
   SGE_LOG_INFO("Parsing Shader good state: ", stream.good());

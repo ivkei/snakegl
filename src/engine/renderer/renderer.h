@@ -1,6 +1,5 @@
 #pragma once
 
-#include"pch/pch.h"
 #include"api.h"
 #include"singleton.h"
 

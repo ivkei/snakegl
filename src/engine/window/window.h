@@ -1,8 +1,7 @@
 #pragma once
 
 #include"api.h"
-
-#include"pch/pch.h"
+#include<functional>
 
 namespace SGE{
 

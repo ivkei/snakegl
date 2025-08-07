@@ -1,6 +1,10 @@
 #pragma once
 
-#include"pch/pch.h"
+#include<iostream>
+#include<thread>
+#include<sstream>
+#include<ctime>
+#include<chrono>
 
 namespace SGE{
 

@@ -25,4 +25,6 @@ public:
   void EatApple(Field& field, Snake& snake, int index);
 
   void DrawApples(Field& field) const;
+
+  inline int ApplesPerField() const { return _applesPerField; }
 };

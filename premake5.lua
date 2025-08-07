@@ -62,7 +62,10 @@ project "snakeglgame"
       "_SNAKEGL_LINUX",
     }
 
-filter "configurations:Debug"
+  filter {"system:windows", "configurations:Release"}
+    linkoptions { "/ENTRY:mainCRTStartup" }
+
+  filter "configurations:Debug"
     kind "ConsoleApp"
     runtime "Debug"
     symbols "on"
@@ -70,7 +73,7 @@ filter "configurations:Debug"
       "_SNAKEGL_DEBUG",
     }
 
-filter "configurations:Release"
+  filter "configurations:Release"
     kind "WindowedApp"
     runtime "Release"
     optimize "on"
@@ -123,6 +126,7 @@ project "snakeglengine"
     "vendors/glm-1.0.1",
     "src/engine",
     "src/",
+    "./", -- Root directory for pch
   }
 
   filter "system:windows"

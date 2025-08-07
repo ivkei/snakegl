@@ -7,6 +7,7 @@
 #include<random>
 #include<ctime>
 
+//Returns -1, -1 if field is being overtaken by the snake
 static Apple GetRandomApple(Field& field, Snake& snake, AppleManager& appleManager){
   //Snake positions
   std::vector<glm::vec2> snakePositions;
@@ -16,13 +17,15 @@ static Apple GetRandomApple(Field& field, Snake& snake, AppleManager& appleManag
     snakePositions.push_back(body[i].pos);
   }
 
-  SGE_LOG_INFO("Snake positions count: ", snakePositions.size());
+  //Cant generate more apples, field is being overtaken
+  if (snake.GetBody().size() + 1 > field.Width() * field.Height() - appleManager.ApplesPerField()){
+    return {glm::vec2(-1, -1)};
+  }
 
   //Generate unique (the one that doesnt fall on snake or on any other apple) apple
   glm::vec2 applePos;
   while (true){
     applePos = {rand() % field.Width(), rand() % field.Height()};
-    SGE_LOG_INFO("Proposed random position: (", applePos.x, ", ", applePos.y, ")");
     bool unique = true;
     
     //Check snake position
@@ -62,15 +65,22 @@ AppleManager::~AppleManager(){
 }
 
 void AppleManager::EatApple(Field& field, Snake& snake, int index){
-  SGE_LOG_INFO("Index of apple eaten: ", index);
   Apple apple = GetRandomApple(field, snake, *this);
-  SGE_LOG_INFO("Apple set at index: (", apple.pos.x, ", ", apple.pos.y, ")");
-  _apples[index] = apple;
+
+  auto cmpRes = glm::epsilonEqual(apple.pos, glm::vec2(-1.0f, -1.0f), 0.01f);
+  if (cmpRes.x && cmpRes.y){
+    SGE_LOG_INFO("Cant fit an apple onto the screen, delete it");
+    _apples.erase(_apples.begin() + index);
+  }
+  else{
+    SGE_LOG_INFO("Apple is randomized");
+    _apples[index] = apple;
+  }
 }
 
 void AppleManager::DrawApples(Field& field) const{
   glm::vec4 appleColor = {0.85f, 0.45f, 0.45f, 1.0f};
-  for (int i = 0; i < _applesPerField; ++i){
+  for (int i = 0; i < _apples.size(); ++i){
     SGE::TSRenderer::Instance()->Quad(glm::vec2(_apples[i].pos.x + field.UnitHorOffset(), _apples[i].pos.y + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), appleColor);
   }
 }
