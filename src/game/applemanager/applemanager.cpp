@@ -52,8 +52,9 @@ static Apple GetRandomApple(Field& field, Snake& snake, AppleManager& appleManag
   return {applePos};
 }
 
-AppleManager::AppleManager(Field& field, Snake& snake, int applesPerField)
-: _applesPerField(applesPerField){
+AppleManager::AppleManager(Field& field, Snake& snake, int applesPerField, glm::vec4 appleColor)
+: _applesPerField(applesPerField),
+  _appleColor(appleColor){
   srand(time(NULL));
 
   for (int i = 0; i < _applesPerField; ++i){
@@ -75,12 +76,5 @@ void AppleManager::EatApple(Field& field, Snake& snake, int index){
   else{
     SGE_LOG_INFO("Apple is randomized");
     _apples[index] = apple;
-  }
-}
-
-void AppleManager::DrawApples(Field& field) const{
-  glm::vec4 appleColor = {0.85f, 0.45f, 0.45f, 1.0f};
-  for (int i = 0; i < _apples.size(); ++i){
-    SGE::TSRenderer::Instance()->Quad(glm::vec2(_apples[i].pos.x + field.UnitHorOffset(), _apples[i].pos.y + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), appleColor);
   }
 }

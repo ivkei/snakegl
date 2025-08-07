@@ -8,12 +8,3 @@ Field::Field(int width, int height, float unitWidth, float unitHeight, float uni
 
 Field::~Field(){
 }
-
-void Field::Draw() const{
-  SGE::TSRenderer::Instance()->Clear(UnitDividerColor());
-  for (int i = 0; i < Width(); ++i){
-    for (int j = 0; j < Height(); ++j){
-      SGE::TSRenderer::Instance()->Quad(glm::vec2(i + UnitHorOffset(), j + UnitVerOffset()), glm::vec2(UnitWidth(), UnitHeight()), BackgroundColor());
-    }
-  }
-}

@@ -4,78 +4,79 @@
 
 #include"engine/sge.h"
 
-Snake::Snake(int initLength, glm::vec2 initHeadPos, glm::vec2 initDirOfBodyFromHead, std::function<void()> gameOver, std::function<void()> win)
+Snake::Snake(int initLength, glm::vec2 initHeadPos, glm::ivec2 initDirOfBodyFromHead, glm::vec4 headColor, glm::ivec2 initMoveDir)
 : _head(initHeadPos),
-  _gameOver(gameOver),
-  _win(win),
-  _moveDir(glm::vec2(1, 0)),
-  _queriedMoveDirNextMove(glm::vec2(1, 0)),
-  _didMove(false){
+  _moveDir(initMoveDir),
+  _queriedMoveDirNextMove(initMoveDir),
+  _didMove(false),
+  _headColor(headColor){
   for (int i = 1; i < initLength; ++i){
-    _bodyUnits.emplace_back(initHeadPos + (float)i*initDirOfBodyFromHead);
+    _bodyUnits.emplace_back(initHeadPos + (float)i*glm::vec2(initDirOfBodyFromHead));
   }
 }
 
 Snake::~Snake(){
 }
 
-void Snake::Draw(Field& field) const{
-  //Head
-  SGE::TSRenderer::Instance()->Quad(glm::vec2(_head.pos.x + field.UnitHorOffset(), _head.pos.y + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), SnakeHead::Color);
-  //Body
-  for (int i = 0; i < _bodyUnits.size(); ++i){
-    SGE::TSRenderer::Instance()->Quad(glm::vec2(_bodyUnits[i].pos.x + field.UnitHorOffset(), _bodyUnits[i].pos.y + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), SnakeUnit::Color);
-  }
+bool Snake::IsBeyondBorder(Field& field) const{
+  return _head.pos.x < 0 ||
+         _head.pos.y < 0 ||
+         _head.pos.x >= field.Width() ||
+         _head.pos.y >= field.Height();
 }
 
-void Snake::Move(Field& field, AppleManager& appleManager){
-  if (!_didMove){
-    //Use queried move dir if player didnt move
-    _moveDir = _queriedMoveDirNextMove;
-  }
-
-  glm::vec2 prevPos = _head.pos;
-  _head.pos += _moveDir;
-  _didMove = false;
-
-  //Out of bounds
-  if (_head.pos.x < 0 || _head.pos.y < 0 || _head.pos.x >= field.Width() || _head.pos.y >= field.Height()){
-    _gameOver();
-    return;
-  }
-  
-  //Eat apple if can
+//Returns -1 if not touching one
+int Snake::TouchingAppleIndex(AppleManager& appleManager) const{
   std::vector<Apple> apples = appleManager.GetApples();
   for (int i = 0; i < apples.size(); ++i){
     auto equalRes = glm::epsilonEqual(_head.pos, apples[i].pos, 0.01f);
     if (equalRes.x && equalRes.y){
-      _bodyUnits.emplace(_bodyUnits.begin(), prevPos);
-      appleManager.EatApple(field, *this, i);
-
-      return; //Added a body unit, moved head
+      return i;
     }
   }
+  return -1;
+}
 
-  //Win
-  if (_bodyUnits.size() + 1 == field.Width() * field.Height()){
-    _win();
+glm::vec2 Snake::MoveHead(){
+  if (!_didMove){
+    //Use queried move dir if player didnt move
+    _moveDir = _queriedMoveDirNextMove;
   }
+  glm::vec2 prevPos = _head.pos;
 
-  //Move body, if didnt eat apple
+  //Head
+  _head.pos += glm::vec2(_moveDir);
+  _didMove = false;
+  return prevPos;
+}
+
+glm::vec2 Snake::MoveBody(glm::vec2 prevPos){
+  //Move body
   for (int i = 0; i < _bodyUnits.size(); ++i){
     glm::vec2 tempPrevPos = _bodyUnits[i].pos;
     _bodyUnits[i].pos = prevPos;
     prevPos = tempPrevPos;
   }
+  return prevPos;
+}
 
-  //Hit itself
+void Snake::MoveBodyAndGrow(glm::vec2 prevPos){
+  prevPos = MoveBody(prevPos);
+  _bodyUnits.emplace_back(prevPos);
+}
+
+bool Snake::IsFillingWholeField(Field& field) const{
+  return _bodyUnits.size() + 1 == field.Width() * field.Height();
+}
+
+bool Snake::IsTouchingItself() const{
   for (int i = 0; i < _bodyUnits.size(); ++i){
     auto equalRes = glm::epsilonEqual(_head.pos, _bodyUnits[i].pos, 0.01f);
     if (equalRes.x && equalRes.y){
-      _gameOver();
-      return;
+      return true;
     }
   }
+  return false;
 }
 
 #define QUERY_MOVE(where, fromWhereCant)\

@@ -1,80 +1,62 @@
 #include"game.h"
 
-#include"glm/gtc/matrix_transform.hpp"
+#include"renderer/renderer.h"
+#include"logic/logic.h"
 
 #include<filesystem>
 
-static std::unique_ptr<Snake> GetInitSnake(Game& game){
-  return std::make_unique<Snake>(3, glm::vec2(3, 5), glm::vec2(-1, 0), [&](){game.Reset();}, [&](){game.Reset();});
+SGE::Window::Stats SnakeGame::WindowStats = {"SnakeGL", 720, 792, false};
+
+static std::unique_ptr<Snake> GetInitSnake(SnakeGame& game){
+  return std::make_unique<Snake>(3, glm::vec2(3, 5), glm::ivec2(-1, 0), glm::vec4(0.67f,0.85f,0.93f,1.0f), glm::ivec2(1, 0));
 }
 
 static std::unique_ptr<AppleManager> GetInitAppleManager(Field& field, Snake& snake){
-  return std::make_unique<AppleManager>(field, snake, 5);
+  return std::make_unique<AppleManager>(field, snake, 5, glm::vec4(0.85f, 0.45f, 0.45f, 1.0f));
 }
 
-void Game::Reset(){
+static std::unique_ptr<Field> GetInitField(){
+  return std::make_unique<Field>(10, 11, 0.95f, 0.95f, 0.025f, 0.025f, glm::vec4(0.43f, 0.76f, 0.46f, 1.0), glm::vec4(0.025f, 0.25f, 0.167f, 1.0f));
+}
+
+void SnakeGame::Reset(){
   _pSnake = GetInitSnake(*this);
   _pAppleManager = GetInitAppleManager(*_pField, *_pSnake);
 }
 
-Game::Game(SGE::Window& window)
-: _pField(new Field(10, 11, 0.95f, 0.95f, 0.025f, 0.025f, glm::vec4(0.43f, 0.76f, 0.46f, 1.0), glm::vec4(0.025f, 0.25f, 0.167f, 1.0f))),
+SnakeGame::SnakeGame(SGE::Window& window)
+: _pField(GetInitField()),
   _pAppleManager(nullptr),
   _pSnake(GetInitSnake(*this)){
   window.SetVSync(false);
 
-  SGE_LOG_INFO("Start creating proj mat");
-  glm::mat4 proj = glm::ortho(0.0f, (float)_pField->Width(), 0.0f, (float)_pField->Height(), -1.0f, 1.0f);
-  SGE_LOG_INFO("Done creating proj mat");
-
-  SGE_LOG_INFO("Start specifying shaders");
-
-  std::filesystem::path execDir = SGE::GetExecDir();
-
-  SGE_LOG_INFO("Exec dir: ", execDir.string());
-
-  SGE::TSRenderer::Instance()->FragShader((execDir / RES_DIR / "shaders/fragP.glsl").string().c_str(), true); //Indirect because windows likes to return wchar* instead of char*
-  SGE::TSRenderer::Instance()->VertShader((execDir / RES_DIR / "shaders/vertP.glsl").string().c_str(), true);
-  SGE::TSRenderer::Instance()->Uniform("uProj", proj);
-
-  SGE_LOG_INFO("Done specifying shaders");
-
-  SGE_LOG_INFO("Shader dir: ", (execDir / RES_DIR / "shaders"));
-
   _pAppleManager = GetInitAppleManager(*_pField, *_pSnake);
 
-  window.SetKeyCallback(SNAKEGL_KEY_W, [&](){_pSnake->QueryMoveUp();});
-  window.SetKeyCallback(SNAKEGL_KEY_A, [&](){_pSnake->QueryMoveLeft();});
-  window.SetKeyCallback(SNAKEGL_KEY_S, [&](){_pSnake->QueryMoveDown();});
-  window.SetKeyCallback(SNAKEGL_KEY_D, [&](){_pSnake->QueryMoveRight();});
-  window.SetKeyCallback(SNAKEGL_KEY_ESC, [&](){Reset();});
-  window.SetKeyCallback(SNAKEGL_KEY_SPC, [&](){Reset();});
+  TSRenderer::Instance()->SetupShadersAndCoord(*_pField);
+  TSLogic::Instance()->SetKeyCallbacks(&window, _pSnake.get(), this);
 }
 
-Game::~Game(){
+SnakeGame::~SnakeGame(){
 }
 
 static float fpsTimer = 1;
 static float fpsFrames = 0;
 
-static const float snakeMovesEverySeconds = 0.2f;
+static const float snakeMovesEverySeconds = TSLogic::Instance()->ExecuteEverySeconds;
 static float snakeMoveTimer = snakeMovesEverySeconds;
 
-void Game::OnUpdate(float deltaSeconds){
+void SnakeGame::OnUpdate(float deltaSeconds){
   ++fpsFrames;
   fpsTimer -= deltaSeconds;
 
   //Move
   snakeMoveTimer -= deltaSeconds;
   if (snakeMoveTimer <= 0){
-    _pSnake->Move(*_pField, *_pAppleManager);
+    TSLogic::Instance()->Execute(*_pSnake, *_pField, *_pAppleManager, *this);
     snakeMoveTimer = snakeMovesEverySeconds;
   }
 
-  _pField->Draw();
-  _pSnake->Draw(*_pField);
-  _pAppleManager->DrawApples(*_pField);
-  SGE::TSRenderer::Instance()->Render();
+  TSRenderer::Instance()->Render(*_pSnake, *_pField, *_pAppleManager);
 
   //Fps (debug)
   if (fpsTimer <= 0){

@@ -1,7 +1,7 @@
 #pragma once
 
 #include"api.h"
-#include"singleton.h"
+#include"utils/singleton.h"
 
 #include"glm/vec4.hpp"
 #include"glm/mat4x4.hpp"

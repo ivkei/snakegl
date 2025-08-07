@@ -4,9 +4,9 @@
 class AppleManager;
 #include"applemanager/applemanager.h"
 
-#include"glm/vec2.hpp"
+#include<vector>
 
-#include<functional>
+#include"glm/vec2.hpp"
 
 #define UP_VEC glm::ivec2(0, 1)
 #define DW_VEC glm::ivec2(0, -1)
@@ -14,32 +14,40 @@ class AppleManager;
 #define RT_VEC glm::ivec2(1, 0)
 
 struct SnakeUnit{
-  inline static glm::vec4 Color = {0.53f,0.77f,0.86f,1.0f};
+  static inline glm::vec4 DefaultColor = {0.53f,0.77f,0.86f,1.0f};
   glm::vec2 pos;
+  glm::vec4 color = DefaultColor;
 };
 struct SnakeHead{
-  inline static glm::vec4 Color = {0.67f,0.85f,0.93f,1.0f};
   glm::vec2 pos;
 };
 
 class Snake{
 private:
-  int _length;
   SnakeHead _head;
-  std::vector<SnakeUnit> _bodyUnits;
-  std::function<void()> _gameOver;
-  std::function<void()> _win;
   glm::ivec2 _moveDir;
-  bool _didMove;
   glm::ivec2 _queriedMoveDirNextMove;
+  bool _didMove;
+  glm::vec4 _headColor;
+  std::vector<SnakeUnit> _bodyUnits;
 public:
   //initDirOfBodyFromHead should either be UP_VEC, DW_VEC, LT_VEC, RT_VEC
   //initLength includes the head
-  Snake(int initLength, glm::vec2 initHeadPos, glm::vec2 initDirOfBodyFromHead, std::function<void()> gameOver, std::function<void()> win);
+  Snake(int initLength, glm::vec2 initHeadPos, glm::ivec2 initDirOfBodyFromHead, glm::vec4 headColor, glm::ivec2 initMoveDir);
   ~Snake();
 
-  void Draw(Field& field) const;
-  void Move(Field& field, AppleManager& apple);
+  bool IsBeyondBorder(Field& field) const;
+  //Returns -1 if not touching one
+  int TouchingAppleIndex(AppleManager& appleManager) const;
+  //Returns position of the last (tail) unit that was left upon moving
+  //prevPos is the position of the head before it moved
+  glm::vec2 MoveBody(glm::vec2 prevPos);
+  //prevPos is the position of the head before it moved
+  void MoveBodyAndGrow(glm::vec2 prevPos);
+  //Returns position of the head before move
+  glm::vec2 MoveHead();
+  bool IsFillingWholeField(Field& field) const;
+  bool IsTouchingItself() const;
 
   void QueryMoveRight();
   void QueryMoveLeft();
@@ -48,4 +56,6 @@ public:
 
   inline SnakeHead GetHead() const { return _head; }
   inline std::vector<SnakeUnit> GetBody() const { return _bodyUnits; }
+
+  inline glm::vec4 HeadColor() const { return _headColor; }
 };

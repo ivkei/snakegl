@@ -24,7 +24,4 @@ public:
   inline float UnitVerOffset() const { return _unitVerOffset; }
   inline glm::vec4 BackgroundColor() const { return _backgroundColor; }
   inline glm::vec4 UnitDividerColor() const { return _unitDividerColor; }
-
-  //Clears via renderer, no need to clear
-  void Draw() const;
 };

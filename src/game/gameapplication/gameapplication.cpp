@@ -4,9 +4,8 @@
 #include<filesystem>
 
 GameApplication::GameApplication(){
-  SGE::Window::Stats stats = {"SnakeGL", 720, 792, false};
-  _pWindow = new SGE::Window(stats);
-  _pGame = new Game(*_pWindow);
+  _pWindow = new SGE::Window(SnakeGame::WindowStats);
+  _pGame = new SnakeGame(*_pWindow);
 }
 
 GameApplication::~GameApplication(){
