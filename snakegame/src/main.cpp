@@ -1,9 +1,12 @@
 #include"sge.h"
 
-#include"application/application.h"
+#include"gameapplication/gameapplication.h"
 
 extern SGE::Application* SGE::CreateApplication(){
-  return new Application();
+  return new GameApplication();
 }
 
 SGE_ENTRY_POINT
+
+//TODO(kei): Update readme
+//TODO(kei): Fix not launching

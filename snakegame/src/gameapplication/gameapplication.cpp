@@ -1,19 +1,19 @@
-#include"application.h"
+#include"gameapplication.h"
 
 #include<chrono>
 #include<filesystem>
 
-Application::Application(){
+GameApplication::GameApplication(){
   _pWindow = new SGE::Window(Game::WindowStats);
   _pGame = new Game(*_pWindow);
 }
 
-Application::~Application(){
+GameApplication::~GameApplication(){
   delete _pGame;
   delete _pWindow;
 }
 
-void Application::Run(){
+void GameApplication::Run(){
   //Chrono now binding
   auto cnow = std::chrono::high_resolution_clock::now;
   auto lastFrame = cnow();
