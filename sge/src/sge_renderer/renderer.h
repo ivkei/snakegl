@@ -7,6 +7,7 @@
 #include"glm/mat4x4.hpp"
 
 namespace SGE{
+//TODO(kei): Add texture support, would be a good solution to orient a texture right, up, down, left on a quad, and that way solve a issues with orienting a texture on a quad
 
 //Batch renderer, batch stuff via functions and then render everything in a single draw call to the Render() member function
 //To use accesss SGE::TSRenderer::Instance()
