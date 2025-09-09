@@ -3,6 +3,8 @@
 #include<random>
 #include<ctime>
 
+#include"sge.h"
+
 static bool IsPopulate(char population){
   return (rand() % 255) < population;
 }

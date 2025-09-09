@@ -6,11 +6,11 @@
 
 #include"sge.h"
 
-class SnakeRenderer{
+class Renderer{
 private:
 public:
   void SetupShadersAndCoord(Field& field);
   void Render(Snake& snake, Field& field, AppleManager& appleManager);
 };
 
-using TSRenderer = SGE::Singleton<SnakeRenderer>;
+using TSRenderer = SGE::Singleton<Renderer>;

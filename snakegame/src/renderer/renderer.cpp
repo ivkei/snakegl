@@ -3,7 +3,7 @@
 #include"glm/gtc/matrix_transform.hpp"
 #include"sge.h"
 
-void SnakeRenderer::SetupShadersAndCoord(Field& field){
+void Renderer::SetupShadersAndCoord(Field& field){
   glm::mat4 proj = glm::ortho(0.0f, (float)field.Width(), 0.0f, (float)field.Height(), -1.0f, 1.0f);
 
   std::filesystem::path execDir = SGE::GetExecDir();
@@ -17,7 +17,7 @@ void SnakeRenderer::SetupShadersAndCoord(Field& field){
   SGE_LOG_INFO("Shader dir: ", (execDir / RES_DIR / "shaders"));
 }
 
-void SnakeRenderer::Render(Snake& snake, Field& field, AppleManager& appleManager){
+void Renderer::Render(Snake& snake, Field& field, AppleManager& appleManager){
   SGE::TSRenderer::Instance()->Clear(field.UnitDividerColor());
 
   //Field
