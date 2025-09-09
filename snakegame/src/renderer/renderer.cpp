@@ -17,14 +17,28 @@ void SnakeRenderer::SetupShadersAndCoord(Field& field){
   SGE_LOG_INFO("Shader dir: ", (execDir / RES_DIR / "shaders"));
 }
 
-void SnakeRenderer::Render(Field& field){
+void SnakeRenderer::Render(Snake& snake, Field& field, AppleManager& appleManager){
   SGE::TSRenderer::Instance()->Clear(field.UnitDividerColor());
 
-  //Field & cells
+  //Field
   for (int i = 0; i < field.Width(); ++i){
     for (int j = 0; j < field.Height(); ++j){
-      SGE::TSRenderer::Instance()->Quad(glm::vec2(i + field.UnitHorOffset(), j + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), field.SlotColor(i, j));
+      SGE::TSRenderer::Instance()->Quad(glm::vec2(i + field.UnitHorOffset(), j + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), field.BackgroundColor());
     }
+  }
+
+  //Head
+  SnakeHead head = snake.GetHead();
+  SGE::TSRenderer::Instance()->Quad(glm::vec2(head.pos.x + field.UnitHorOffset(), head.pos.y + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), snake.HeadColor());
+  //Body
+  std::vector<SnakeUnit> body = snake.GetBody();
+  for (int i = 0; i < body.size(); ++i){
+    SGE::TSRenderer::Instance()->Quad(glm::vec2(body[i].pos.x + field.UnitHorOffset(), body[i].pos.y + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), body[i].color);
+  }
+
+  std::vector<Apple> apples = appleManager.GetApples();
+  for (int i = 0; i < apples.size(); ++i){
+    SGE::TSRenderer::Instance()->Quad(glm::vec2(apples[i].pos.x + field.UnitHorOffset(), apples[i].pos.y + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), appleManager.AppleColor());
   }
 
   SGE::TSRenderer::Instance()->Render();

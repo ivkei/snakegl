@@ -1,4 +1,4 @@
-workspace "snakegame"
+workspace "lifegame"
 architecture "x64"
 configurations
 {
@@ -10,7 +10,7 @@ include "../vendors/glfw-3.4/"
 include "../vendors/glew-2.2.0/"
 include "../sge/"
 
-project "snakegame"
+project "lifegame"
   language "C++"
   cppdialect "C++23"
   staticruntime "On"
@@ -27,7 +27,7 @@ project "snakegame"
     runtimeResDir = path.getrelative("../build/bin/", "../build/res/")
     compiletimeResDir = path.getabsolute("res/")
     compiletimeBuildDir = path.getabsolute("../build/")
-    execPath = path.join(compiletimeBuildDir, "bin", "snakegame.exe")
+    execPath = path.join(compiletimeBuildDir, "bin", "%{prj.name}.exe")
     engineDLLPath = path.join(compiletimeBuildDir, "bin", "libsnakeglengine.dll")
 
   filter "system:linux"
@@ -38,7 +38,7 @@ project "snakegame"
     runtimeResDir = path.getrelative("%{prj.location}/../build/bin/", "%{prj.location}/../build/res/")
     compiletimeResDir = path.getabsolute("%{prj.location}/res/")
     compiletimeBuildDir = path.getabsolute("%{prj.location}/../build/")
-    execPath = path.join(compiletimeBuildDir, "bin", "snakegame")
+    execPath = path.join(compiletimeBuildDir, "bin", "%{prj.name}")
     engineDLLPath = path.join(compiletimeBuildDir, "bin", "libsnakeglengine.so")
 
   files
@@ -81,10 +81,11 @@ project "snakegame"
     runtime "Release"
     optimize "on"
     defines "_SNAKEGL_RELEASE"
+    releaseDirName = "lifegamerelease"
     postbuildcommands{
-      "{MKDIR} " .. path.join(compiletimeBuildDir, "snakegamerelease") .. "",
-      "{COPYDIR} \"" .. compiletimeResDir .. "\" \"" .. path.join(compiletimeBuildDir, "snakegamerelease") .. "\"",
-      "{MKDIR} " .. path.join(compiletimeBuildDir, "snakegamerelease", "bin") .. "",
-      "{COPYFILE} \"" .. execPath .. "\" \"" .. path.join(compiletimeBuildDir, "snakegamerelease", "bin") .. "\"",
-      "{COPYFILE} \"" .. engineDLLPath .. "\" \"" .. path.join(compiletimeBuildDir, "snakegamerelease", "bin") .. "\"",
+      "{MKDIR} " .. path.join(compiletimeBuildDir, releaseDirName) .. "",
+      "{COPYDIR} \"" .. compiletimeResDir .. "\" \"" .. path.join(compiletimeBuildDir, releaseDirName) .. "\"",
+      "{MKDIR} " .. path.join(compiletimeBuildDir, releaseDirName, "bin") .. "",
+      "{COPYFILE} \"" .. execPath .. "\" \"" .. path.join(compiletimeBuildDir, releaseDirName, "bin") .. "\"",
+      "{COPYFILE} \"" .. engineDLLPath .. "\" \"" .. path.join(compiletimeBuildDir, releaseDirName, "bin") .. "\"",
     }
