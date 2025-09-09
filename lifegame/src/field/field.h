@@ -21,7 +21,7 @@ public:
   //population - amount of population per field, within 255, where 255 is every cell is populate, 0 is every cell is dead
   Field(int width, int height, float unitWidth, float unitHeight, float unitHorOffset, float unitVerOffset,
         glm::vec4 backgroundColor, glm::vec4 unitDividerColor, glm::vec4 cellColor,
-        char population);
+        unsigned char population);
   ~Field();
 
   inline int Width() const { return _width; }

@@ -5,13 +5,13 @@
 
 #include"sge.h"
 
-static bool IsPopulate(char population){
-  return (rand() % 255) < population;
+static bool IsPopulate(unsigned char population){
+  return (rand() % 255) < (int)population;
 }
 
 Field::Field(int width, int height, float unitWidth, float unitHeight, float unitHorOffset, float unitVerOffset,
              glm::vec4 backgroundColor, glm::vec4 unitDividerColor, glm::vec4 cellColor,
-             char population)
+             unsigned char population)
 : _width(width), _height(height), _unitWidth(unitWidth), _unitHeight(unitHeight), _unitHorOffset(unitHorOffset), _unitVerOffset(unitVerOffset),
   _backgroundColor(backgroundColor), _unitDividerColor(unitDividerColor), _cellColor(cellColor),
   _field(std::vector<std::vector<bool>>(width, std::vector<bool>(height, 0))){
@@ -20,7 +20,8 @@ Field::Field(int width, int height, float unitWidth, float unitHeight, float uni
 
   for (int i = 0; i < width; ++i){
     for (int j = 0; j < height; ++j){
-      _field[i][j] = IsPopulate(population);
+      bool isPopulate = IsPopulate(population);
+      _field[i][j] = isPopulate;
     }
   }
 }
@@ -48,7 +49,7 @@ void Field::Update(){
       int neighborsCount = NeighborsCount(_field, i, j);
 
       //Rules
-      if (neighborsCount < 2 && neighborsCount > 3) newField[i][j] = false;
+      if (neighborsCount < 2 || neighborsCount > 3) newField[i][j] = false;
       else if (neighborsCount == 3) newField[i][j] = true;
       else newField[i][j] = _field[i][j];
     }

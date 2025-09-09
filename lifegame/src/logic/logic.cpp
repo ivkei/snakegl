@@ -3,7 +3,7 @@
 #include"glm/gtc/matrix_transform.hpp"
 #include"sge.h"
 
-float Logic::ExecuteEverySeconds = 0.2f;
+float Logic::ExecuteEverySeconds = 0.1f;
 
 void Logic::SetKeyCallbacks(SGE::Window* pWindow, Game* pGame){
   pWindow->SetKeyCallback(SNAKEGL_KEY_ESC, [pGame = pGame](){pGame->Reset();});

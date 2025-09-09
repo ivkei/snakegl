@@ -8,7 +8,7 @@
 SGE::Window::Stats Game::WindowStats = {"SnakeGL", 1280, 720, false};
 
 static std::unique_ptr<Field> GetInitField(){
-  return std::make_unique<Field>(128, 72, 0.95f, 0.95f, 0.025f, 0.025f,
+  return std::make_unique<Field>(128, 72, 0.90f, 0.90f, 0.025f, 0.025f,
                                  glm::vec4(0.0f, 0.0f, 0.0f, 1.0), glm::vec4(0.1f, 0.1f, 0.1f, 1.0f), glm::vec4(0.85f, 0.08f, 0.2f, 1.0f),
                                  128);
 }
