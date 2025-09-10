@@ -39,5 +39,5 @@ void Logic::Execute(Field& field, Game& game){
     }
   }
 
-  field.SetField(std::move(newField));
+  field.GetField() = std::move(newField);
 }

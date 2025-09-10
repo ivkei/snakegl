@@ -35,7 +35,7 @@ public:
   inline glm::vec4 UnitDividerColor() const { return _unitDividerColor; }
   inline glm::vec4 CellColor() const { return _cellColor; }
   inline bool SlotState(int x, int y) const { return _field[x][y]; };
-  inline void SetField(std::vector<std::vector<bool>>&& newField) { _field = newField; };
+  inline std::vector<std::vector<bool>>& GetField() { return _field; };
 
   //Population is chance percentage (0%-100%) of a cell being populate
   //Everything beyond 0-100 will get clamped
