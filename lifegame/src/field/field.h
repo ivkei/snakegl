@@ -18,10 +18,11 @@ private:
 
   std::vector<std::vector<bool>> _field;
 public:
-  //population - amount of population per field, within 255, where 255 is every cell is populate, 0 is every cell is dead
+  //Population is chance percentage (0%-100%) of a cell being populate
+  //Everything beyond 0-100 will get clamped
   Field(int width, int height, float unitWidth, float unitHeight, float unitHorOffset, float unitVerOffset,
         glm::vec4 backgroundColor, glm::vec4 unitDividerColor, glm::vec4 cellColor,
-        unsigned char population);
+        int population);
   ~Field();
 
   inline int Width() const { return _width; }
@@ -33,7 +34,10 @@ public:
   inline glm::vec4 BackgroundColor() const { return _backgroundColor; }
   inline glm::vec4 UnitDividerColor() const { return _unitDividerColor; }
   inline glm::vec4 CellColor() const { return _cellColor; }
-  inline glm::vec4 SlotColor(int x, int y) const { return (_field[x][y] ? _cellColor : _backgroundColor); };
+  inline bool SlotState(int x, int y) const { return _field[x][y]; };
+  inline void SetField(std::vector<std::vector<bool>>&& newField) { _field = newField; };
 
-  void Update();
+  //Population is chance percentage (0%-100%) of a cell being populate
+  //Everything beyond 0-100 will get clamped
+  void Randomize(int population);
 };

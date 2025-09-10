@@ -23,7 +23,7 @@ void Renderer::Render(Field& field){
   //Field & cells
   for (int i = 0; i < field.Width(); ++i){
     for (int j = 0; j < field.Height(); ++j){
-      SGE::TSRenderer::Instance()->Quad(glm::vec2(i + field.UnitHorOffset(), j + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), field.SlotColor(i, j));
+      SGE::TSRenderer::Instance()->Quad(glm::vec2(i + field.UnitHorOffset(), j + field.UnitVerOffset()), glm::vec2(field.UnitWidth(), field.UnitHeight()), field.SlotState(i, j) ? field.CellColor() : field.BackgroundColor());
     }
   }
 
