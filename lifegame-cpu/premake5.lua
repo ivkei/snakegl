@@ -1,4 +1,4 @@
-workspace "snakegame"
+workspace "lifegame"
 architecture "x64"
 configurations
 {
@@ -10,7 +10,7 @@ include "../vendors/glfw-3.4/"
 include "../vendors/glew-2.2.0/"
 include "../sge/"
 
-project "snakegame"
+project "lifegame-cpu"
   language "C++"
   cppdialect "C++23"
   staticruntime "On"

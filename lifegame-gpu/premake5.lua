@@ -10,7 +10,7 @@ include "../vendors/glfw-3.4/"
 include "../vendors/glew-2.2.0/"
 include "../sge/"
 
-project "lifegame"
+project "lifegame-gpu"
   language "C++"
   cppdialect "C++23"
   staticruntime "On"
@@ -81,7 +81,7 @@ project "lifegame"
     runtime "Release"
     optimize "on"
     defines "_SNAKEGL_RELEASE"
-    releaseDirName = "lifegamerelease"
+    releaseDirName = "%{prj.name}_release"
     postbuildcommands{
       "{MKDIR} " .. path.join(compiletimeBuildDir, releaseDirName) .. "",
       "{COPYDIR} \"" .. compiletimeResDir .. "\" \"" .. path.join(compiletimeBuildDir, releaseDirName) .. "\"",
