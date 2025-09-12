@@ -5,6 +5,8 @@
 
 float Logic::ExecuteEverySeconds = 0.1f;
 
+//TODO(kei): Change this file to use gpu to compute next generation
+
 void Logic::SetKeyCallbacks(SGE::Window* pWindow, Game* pGame){
   pWindow->SetKeyCallback(SNAKEGL_KEY_ESC, [pGame = pGame](){pGame->Reset();});
   pWindow->SetKeyCallback(SNAKEGL_KEY_SPC, [pGame](){pGame->Reset();});
