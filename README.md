@@ -1,6 +1,6 @@
 # SnakeGL
 * SnakeGL Game Engine (SGE) is a cross-platform, except for Mac, which I don't own, 2D game engine that uses OpenGL as its backend, though can easily be ported to other graphics APIs (aside from shaders).
-* This repository comes with the engine itself (sge part), and a few games made on it (snakegame, etc.).
+* This repository comes with the engine itself (sge part), and a few games made on it (snakegame, etc.), note: lifegame-gpu is in development.
 
 ## Compile & Play
 ```sh
