@@ -5,7 +5,7 @@
 
 #include<filesystem>
 
-SGE::Window::Stats Game::WindowStats = {"SnakeGL", 720, 792, false};
+SGE::Window::Stats Game::WindowStats = {"SnakeGL", 720, 792, false, 3.3f};
 
 static std::unique_ptr<Snake> GetInitSnake(Game& game){
   return std::make_unique<Snake>(3, glm::vec2(3, 5), glm::ivec2(-1, 0), glm::vec4(0.67f,0.85f,0.93f,1.0f), glm::ivec2(1, 0));

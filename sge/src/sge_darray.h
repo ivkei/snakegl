@@ -24,13 +24,10 @@ long long lsearch(const T& key, const U& container){
 }
 
 #ifdef _SNAKEGL_ENABLE_ASSERTS
-#define assert(x)\
-  if (!(x)){\
-    printf("Assertion failed, line: %d, file: \"%s\"!\n", __LINE__, __FILE__);\
-    exit(1);\
-  }
+#define _DARRAY_ASSERT(x)\
+  SGE_LOG_ASSERT(x, "darray assertion failed!")
 #else
-#define assert(x)
+#define _DARRAY_ASSERT(x)
 #endif
 
 //Dynamic array, alternative of std::vector

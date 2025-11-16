@@ -5,7 +5,7 @@
 
 #include<filesystem>
 
-SGE::Window::Stats Game::WindowStats = {"SnakeGL", 1280, 720, false};
+SGE::Window::Stats Game::WindowStats = {"SnakeGL", 1280, 720, false, 3.3f};
 
 static std::unique_ptr<Field> GetInitField(){
   return std::make_unique<Field>(128, 72, 0.90f, 0.90f, 0.025f, 0.025f,

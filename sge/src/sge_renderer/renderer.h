@@ -9,7 +9,6 @@
 namespace SGE{
 //TODO(kei): Add texture support, would be a good solution to orient a texture right, up, down, left on a quad, and that way solve a issues with orienting a texture on a quad
 //TODO(kei): Would be a good idea to add compute shader here
-//TODO(kei): Would also be a good idea to add a function to specify the version of OpenGL somewhere here
 
 //Batch renderer, batch stuff via functions and then render everything in a single draw call to the Render() member function
 //To use accesss SGE::TSRenderer::Instance()

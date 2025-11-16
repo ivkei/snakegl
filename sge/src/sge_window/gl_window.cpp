@@ -12,7 +12,7 @@ namespace SGE{
 //Use address of window as key, when moved or copied ctor will handle the change
 static std::unordered_map<const Window*, GLFWwindow*> addressToWindow;
 
-const Window::Stats Window::Stats::Default = {"Application", 1280, 720, true};
+const Window::Stats Window::Stats::Default = {"Application", 1280, 720, true, 3.3f};
 
 static std::unordered_map<int, std::function<void()>> glfwKeyToFuncCallback;
 void KeyCallback(GLFWwindow* pWindow, int key, int scancode, int action, int mods){
@@ -42,8 +42,8 @@ Window::Window(Stats stats)
   wasGlfwInit = true;
 
   //OpenGL version
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, std::floor(stats.apiVersion));
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, (stats.apiVersion - std::floor(stats.apiVersion)) * 10);
 
   //Switch profile
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //Uncomment to use core profile

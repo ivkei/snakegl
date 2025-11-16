@@ -12,6 +12,7 @@ public:
     int width;
     int height;
     bool resizable;
+    float apiVersion;
 
     const static Stats Default;
   };
