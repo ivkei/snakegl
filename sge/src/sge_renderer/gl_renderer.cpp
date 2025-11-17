@@ -147,6 +147,29 @@ Renderer::Renderer(){
   GLCall(glBlendFunc(GL_SRC_ALPHA,  GL_ONE_MINUS_SRC_ALPHA));
   GLCall(glEnable(GL_BLEND));
 
+  //Compute groups info
+  SGE_LOG_INFO("");
+  SGE_LOG_INFO("=====Info for compute shaders=====");
+  GLint t;
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &t);
+  SGE_LOG_INFO("Max work group amount on X: ", t);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &t);
+  SGE_LOG_INFO("Max work group amount on Y: ", t);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &t);
+  SGE_LOG_INFO("Max work group amount on Z: ", t);
+
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &t);
+  SGE_LOG_INFO("Max local size on X: ", t);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &t);
+  SGE_LOG_INFO("Max local size on Y: ", t);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &t);
+  SGE_LOG_INFO("Max local size on Z: ", t);
+
+  glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &t);
+  SGE_LOG_INFO("Max local size: ", t);
+  SGE_LOG_INFO("==================================");
+  SGE_LOG_INFO("");
+
   //Layout
   VertexBufferLayout layout;
   layout.Push<float>(2);
